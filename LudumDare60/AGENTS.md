@@ -1,6 +1,6 @@
 # Contexte des projets Unity
 
-Ce contenu est à mettre à jour en fonction des changements effectués et des nouveaux ajouts, mais seulement quand c’est vraiment important pour la suite.
+Ce contenu est à mettre à jour en fonction des changements effectués et des nouveaux ajouts, mais seulement quand c’est vraiment important pour la suite, éviter de surcharger ce fichier.
 
 ## Environnement technique
 
@@ -40,7 +40,7 @@ Ce contenu est à mettre à jour en fonction des changements effectués et des n
 
 ## Tests
 
-- Ne fais pas de tests fonctionnels en play mode toi-même.
+- Ne fais pas de tests fonctionnels en play mode toi-même. Pas besoin de mentionner dans tes résumés que tu ne fais pas ces tests.
 
 ## Délivrables
 
@@ -121,3 +121,4 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
   - Nécessite la renderer feature Decal en technique DBuffer (surface Albedo) sur `PC_Renderer` et `Mobile_Renderer`.
 - Toutes les animations se font en frame by frame.
 - La paroi est uniquement éclairée par des torches avec une lumière vacillante.
+  - Les torches sont des point lights enfants de la caméra, avec le composant `TorchFlicker` (réglages partagés dans `Data/TorchFlickerSettings`). L'intensité, la range et la position de base restent sur chaque light.
