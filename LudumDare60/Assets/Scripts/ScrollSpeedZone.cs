@@ -36,7 +36,7 @@ namespace LD60
         void OnDrawGizmos()
         {
             Vector3 center = new(StartX + width * 0.5f, transform.position.y, 0f);
-            Vector3 size = new(width, 20f, 0.1f);
+            Vector3 size = new(width, 50f, 0.1f);
             Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.08f);
             Gizmos.DrawCube(center, size);
             Gizmos.color = new Color(0.2f, 0.8f, 1f, 0.8f);

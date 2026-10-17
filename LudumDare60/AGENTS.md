@@ -113,6 +113,8 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 - Le gameplay utilise la physique 2D (plan z=0), les visuels restent des objets 3D (quads) rendus en URP.
 - Le niveau est statique dans la scène ; la paroi de la caverne est une succession de quads recyclés devant la caméra pour paraître infinie.
   - Height map nécessaire ou juste normal map?
-- Les dessins sur la paroi sont aussi des quads qui doivent suivre les irrégularités de la paroi (les textures utilisées par la paroi doivent être appliquées sur les dessins aussi, sauf la couleur).
+- Les dessins sur la paroi suivent ses irrégularités (normal map, metallic, smoothness de la paroi, seule la couleur vient du dessin).
+  - Ce sont des `SpriteRenderer` avec le material `Paintings` (shader `LD60/PaintingDecal`, copie du Decal URP dont la Base Map est `_MainTex`) : URP les rend comme des mesh decals, donc les animations de sprites et `flipX` fonctionnent normalement.
+  - Nécessite la renderer feature Decal en technique DBuffer (surface Albedo) sur `PC_Renderer` et `Mobile_Renderer`.
 - Toutes les animations se font en frame by frame.
 - La paroi est uniquement éclairée par des torches avec une lumière vacillante.

@@ -16,7 +16,7 @@ MonoBehaviour:
   acceleration: 60
   deceleration: 50
   airControl: 0.6
-  jumpHeight: 2.05
+  jumpHeight: 2.5
   gravity: 29.43
   jumpCutMultiplier: 0.5
   coyoteTime: 0.1
