@@ -11,7 +11,7 @@ namespace LD60
         [Tooltip("Scroll speed outside any ScrollSpeedZone.")]
         [SerializeField, Min(0f)] float defaultSpeed = 2f;
 
-        [Tooltip("Distance kept between the player and the left/right edges of the screen.")]
+        [Tooltip("Distance kept between the player and the right edge of the screen.")]
         [SerializeField, Min(0f)] float edgeMargin = 0.5f;
 
         public float DefaultSpeed => defaultSpeed;

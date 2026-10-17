@@ -3,7 +3,8 @@ using UnityEngine;
 namespace LD60
 {
     /// <summary>
-    /// Keeps the player inside the visible area: the left edge of the camera pushes them forward.
+    /// Keeps the player inside the visible area: the right edge of the camera blocks them.
+    /// The left edge kills them instead (see PlayerDeath).
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D))]
     public class CameraPush : MonoBehaviour
@@ -21,27 +22,16 @@ namespace LD60
                 return;
             }
 
-            float margin = scroller.Settings.EdgeMargin;
-            float minX = scroller.LeftEdgeX + margin;
-            float maxX = scroller.RightEdgeX - margin;
+            float maxX = scroller.RightEdgeX - scroller.Settings.EdgeMargin;
             Vector2 position = body.position;
-            Vector2 velocity = body.linearVelocity;
-
-            if (position.x < minX)
-            {
-                position.x = minX;
-                velocity.x = Mathf.Max(velocity.x, scroller.CurrentSpeed);
-            }
-            else if (position.x > maxX)
-            {
-                position.x = maxX;
-                velocity.x = Mathf.Min(velocity.x, 0f);
-            }
-            else
+            if (position.x <= maxX)
             {
                 return;
             }
 
+            Vector2 velocity = body.linearVelocity;
+            position.x = maxX;
+            velocity.x = Mathf.Min(velocity.x, 0f);
             body.position = position;
             body.linearVelocity = velocity;
         }

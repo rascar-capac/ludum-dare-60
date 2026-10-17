@@ -3,8 +3,8 @@ using UnityEngine;
 namespace LD60
 {
     /// <summary>
-    /// Applies SpriteRenderer.flipX to the PaintingDecal shader, which ignores the sprite flip:
-    /// the sprite UV range and flip state are sent per renderer so the shader mirrors the UVs.
+    /// Applies SpriteRenderer.flipX and the alpha of SpriteRenderer.color to the PaintingDecal shader, which ignores both:
+    /// the sprite UV range and flip state are sent per renderer so the shader mirrors the UVs, and the alpha as _Opacity.
     /// Requires sprites imported with the Full Rect mesh type.
     /// </summary>
     [ExecuteAlways]
@@ -12,11 +12,13 @@ namespace LD60
     public class PaintingSpriteFlip : MonoBehaviour
     {
         static readonly int SpriteFlipRectId = Shader.PropertyToID("_SpriteFlipRect");
+        static readonly int OpacityId = Shader.PropertyToID("_Opacity");
 
         SpriteRenderer spriteRenderer;
         MaterialPropertyBlock propertyBlock;
         Sprite appliedSprite;
         bool appliedFlip;
+        float appliedAlpha;
 
         void OnEnable()
         {
@@ -29,7 +31,8 @@ namespace LD60
         {
             Sprite sprite = spriteRenderer.sprite;
             bool flip = spriteRenderer.flipX;
-            if (sprite == null || (sprite == appliedSprite && flip == appliedFlip))
+            float alpha = spriteRenderer.color.a;
+            if (sprite == null || (sprite == appliedSprite && flip == appliedFlip && alpha == appliedAlpha))
             {
                 return;
             }
@@ -44,9 +47,11 @@ namespace LD60
 
             spriteRenderer.GetPropertyBlock(propertyBlock);
             propertyBlock.SetVector(SpriteFlipRectId, new Vector4(uMin, uMax, flip ? 1f : 0f, 0f));
+            propertyBlock.SetFloat(OpacityId, alpha);
             spriteRenderer.SetPropertyBlock(propertyBlock);
             appliedSprite = sprite;
             appliedFlip = flip;
+            appliedAlpha = alpha;
         }
     }
 }

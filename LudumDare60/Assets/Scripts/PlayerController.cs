@@ -47,6 +47,10 @@ namespace LD60
         {
             moveAction?.action.Disable();
             jumpAction?.action.Disable();
+            if (animator != null)
+            {
+                animator.SetBool(IsRunningHash, false);
+            }
         }
 
         void Update()

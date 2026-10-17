@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 5445702086415082376}
   - component: {fileID: 7650470326839406223}
   - component: {fileID: 3918274650192837465}
+  - component: {fileID: 1273781892046349891}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -226,3 +227,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fe3cf7d178a7492cb9df9c239bc09d09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LD60.Runtime::LD60.PaintingSpriteFlip
+--- !u!114 &1273781892046349891
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1184255859858781919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f0bb9b23d27345540968ab5de114fd34, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LD60.Runtime::LD60.PlayerDeath
+  scroller: {fileID: 0}
+  settings: {fileID: 11400000, guid: 85b0938926d27ae4c98a22e2b4943578, type: 2}
+  deathBurstPrefab: {fileID: 1751089258113717784, guid: 7450c9268c1c7b84198c283870f400d6, type: 3}

@@ -78,8 +78,9 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 
 - Humain qui peut courir, sauter et utiliser des objets qu’il ramasse.
 - Le joueur peut le déplacer à la manette ou au clavier.
-- À chaque fois qu’il est blessé ou qu’il se fait rattraper par la caméra, il meurt et réapparait au dernier checkpoint.
-  - La caméra side scroll en arrière pour revenir jusqu’au checkpoint.
+- À chaque fois qu’il est blessé, qu’il se fait rattraper par la caméra, ou qu’il tombe dans un trou, il meurt et réapparait au dernier checkpoint.
+  - La caméra retourne en arrière jusqu’au checkpoint avec un mouvement fluide.
+  - Le côté droit et le haut de la caméra ne provoquent pas de mort, ils doivent juste bloquer le passage.
 
 ### Obstacles
 
@@ -116,6 +117,7 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 - Les dessins sur la paroi suivent ses irrégularités (normal map, metallic, smoothness de la paroi, seule la couleur vient du dessin).
   - Ce sont des `SpriteRenderer` avec le material `Paintings` (shader `LD60/PaintingDecal`, copie du Decal URP dont la Base Map est `_MainTex`) : URP les rend comme des mesh decals, donc les animations de sprites fonctionnent normalement.
   - Le shader ignore `flipX` : inverser la géométrie (vertex stage ou scale négatif) casse le culling des passes Decal. Ajouter le composant `PaintingSpriteFlip`, qui envoie la plage UV du sprite et l'état du flip (`_SpriteFlipRect`) via un MaterialPropertyBlock ; le shader inverse alors les UV. Les sprites concernés doivent être importés en Mesh Type `Full Rect`.
+  - Le shader ignore aussi `SpriteRenderer.color` : `PaintingSpriteFlip` transmet uniquement l'alpha (`_Opacity`), qui atténue la couleur et la normale du decal.
   - Nécessite la renderer feature Decal en technique DBuffer (surface Albedo) sur `PC_Renderer` et `Mobile_Renderer`.
 - Toutes les animations se font en frame by frame.
 - La paroi est uniquement éclairée par des torches avec une lumière vacillante.
