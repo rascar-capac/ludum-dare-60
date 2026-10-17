@@ -1254,33 +1254,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8645615720566291600, guid: 49e469cc0ce0fbf4a830eaa371f035ed, type: 3}
   m_PrefabInstance: {fileID: 1153774213}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1169486009 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1184255859858781919, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
-  m_PrefabInstance: {fileID: 2004913593}
-  m_PrefabAsset: {fileID: 0}
---- !u!95 &1169486018
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1169486009}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: dd6a230da41cd7e47b6723803f34ea47, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &1178178435
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1923,21 +1896,10 @@ PrefabInstance:
       propertyPath: scroller
       value: 
       objectReference: {fileID: 685373887}
-    - target: {fileID: 7164149728019589464, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: -1311472332, guid: 116518e2c41c9bd40a3ac036ce09dcbf, type: 3}
-    - target: {fileID: 7164149728019589464, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
-      propertyPath: m_WasSpriteAssigned
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1184255859858781919, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1169486018}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
 --- !u!1 &2067199282
 GameObject:

@@ -9,6 +9,8 @@ namespace LD60
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
     public class PlayerController : MonoBehaviour
     {
+        static readonly int IsRunningHash = Animator.StringToHash("IsRunning");
+
         [Header("Input")]
         [SerializeField] InputActionReference moveAction;
         [SerializeField] InputActionReference jumpAction;
@@ -19,6 +21,8 @@ namespace LD60
 
         Rigidbody2D body;
         Collider2D bodyCollider;
+        SpriteRenderer spriteRenderer;
+        Animator animator;
         float lastGroundedTime = float.NegativeInfinity;
         float lastJumpPressedTime = float.NegativeInfinity;
         bool jumpReleased;
@@ -29,6 +33,8 @@ namespace LD60
         {
             body = GetComponent<Rigidbody2D>();
             bodyCollider = GetComponent<Collider2D>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            animator = GetComponent<Animator>();
         }
 
         void OnEnable()
@@ -45,6 +51,8 @@ namespace LD60
 
         void Update()
         {
+            UpdateVisuals();
+
             if (jumpAction == null)
             {
                 return;
@@ -104,6 +112,21 @@ namespace LD60
             }
 
             body.linearVelocity = velocity;
+        }
+
+        void UpdateVisuals()
+        {
+            float input = moveAction != null ? moveAction.action.ReadValue<Vector2>().x : 0f;
+            bool isRunning = Mathf.Abs(input) > 0.01f;
+
+            if (animator != null)
+            {
+                animator.SetBool(IsRunningHash, isRunning);
+            }
+            if (spriteRenderer != null && isRunning)
+            {
+                spriteRenderer.flipX = input < 0f;
+            }
         }
 
         bool CheckGrounded()
