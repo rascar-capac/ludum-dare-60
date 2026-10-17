@@ -1,6 +1,6 @@
 # Contexte des projets Unity
 
-Ce contenu est à mettre à jour en fonction des changements effectués et des nouveaux ajouts.
+Ce contenu est à mettre à jour en fonction des changements effectués et des nouveaux ajouts, mais seulement quand c’est vraiment important pour la suite.
 
 ## Environnement technique
 
@@ -114,7 +114,8 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 - Le niveau est statique dans la scène ; la paroi de la caverne est une succession de quads recyclés devant la caméra pour paraître infinie.
   - Height map nécessaire ou juste normal map?
 - Les dessins sur la paroi suivent ses irrégularités (normal map, metallic, smoothness de la paroi, seule la couleur vient du dessin).
-  - Ce sont des `SpriteRenderer` avec le material `Paintings` (shader `LD60/PaintingDecal`, copie du Decal URP dont la Base Map est `_MainTex`) : URP les rend comme des mesh decals, donc les animations de sprites et `flipX` fonctionnent normalement.
+  - Ce sont des `SpriteRenderer` avec le material `Paintings` (shader `LD60/PaintingDecal`, copie du Decal URP dont la Base Map est `_MainTex`) : URP les rend comme des mesh decals, donc les animations de sprites fonctionnent normalement.
+  - Le shader ignore `flipX` : inverser la géométrie (vertex stage ou scale négatif) casse le culling des passes Decal. Ajouter le composant `PaintingSpriteFlip`, qui envoie la plage UV du sprite et l'état du flip (`_SpriteFlipRect`) via un MaterialPropertyBlock ; le shader inverse alors les UV. Les sprites concernés doivent être importés en Mesh Type `Full Rect`.
   - Nécessite la renderer feature Decal en technique DBuffer (surface Albedo) sur `PC_Renderer` et `Mobile_Renderer`.
 - Toutes les animations se font en frame by frame.
 - La paroi est uniquement éclairée par des torches avec une lumière vacillante.

@@ -2303,6 +2303,10 @@ PrefabInstance:
       propertyPath: scroller
       value: 
       objectReference: {fileID: 685373887}
+    - target: {fileID: 7164149728019589464, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
+      propertyPath: m_FlipX
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
