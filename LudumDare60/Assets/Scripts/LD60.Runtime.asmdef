@@ -1,0 +1,8 @@
+{
+    "name": "LD60.Runtime",
+    "rootNamespace": "LD60",
+    "references": [
+        "Unity.InputSystem"
+    ],
+    "autoReferenced": true
+}
