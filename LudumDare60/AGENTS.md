@@ -56,6 +56,10 @@ Lorsqu’un délivrable est demandé :
 
 Avant une publication, vérifier que les tests et les builds ont réussi. Ne jamais exposer de secrets ou de jetons d’authentification dans le dépôt, les logs ou les réponses.
 
+## Versioning
+
+- Laisse moi faire les commits. Pas besoin de mentionner le fait que tu ne l’as pas fait toi-même.
+
 ## Game Design
 
 ### Pitch
@@ -116,8 +120,8 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
   - Height map nécessaire ou juste normal map?
 - Les dessins sur la paroi suivent ses irrégularités (normal map, metallic, smoothness de la paroi, seule la couleur vient du dessin).
   - Ce sont des `SpriteRenderer` avec le material `Paintings` (shader `LD60/PaintingDecal`, copie du Decal URP dont la Base Map est `_MainTex`) : URP les rend comme des mesh decals, donc les animations de sprites fonctionnent normalement.
-  - Le shader ignore `flipX` : inverser la géométrie (vertex stage ou scale négatif) casse le culling des passes Decal. Ajouter le composant `PaintingSpriteFlip`, qui envoie la plage UV du sprite et l'état du flip (`_SpriteFlipRect`) via un MaterialPropertyBlock ; le shader inverse alors les UV. Les sprites concernés doivent être importés en Mesh Type `Full Rect`.
-  - Le shader ignore aussi `SpriteRenderer.color` : `PaintingSpriteFlip` transmet uniquement l'alpha (`_Opacity`), qui atténue la couleur et la normale du decal.
+  - Le shader ignore `flipX` : inverser la géométrie (vertex stage ou scale négatif) casse le culling des passes Decal. Ajouter le composant `PaintingSpriteSync`, qui envoie la plage UV du sprite et l'état du flip (`_SpriteFlipRect`) via un MaterialPropertyBlock ; le shader inverse alors les UV. Les sprites concernés doivent être importés en Mesh Type `Full Rect`.
+  - Le shader ignore aussi `SpriteRenderer.color` : `PaintingSpriteSync` transmet uniquement l'alpha (`_Opacity`), qui atténue la couleur et la normale du decal.
   - Nécessite la renderer feature Decal en technique DBuffer (surface Albedo) sur `PC_Renderer` et `Mobile_Renderer`.
 - Toutes les animations se font en frame by frame.
 - La paroi est uniquement éclairée par des torches avec une lumière vacillante.
