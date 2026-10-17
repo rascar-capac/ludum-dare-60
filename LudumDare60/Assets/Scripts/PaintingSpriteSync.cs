@@ -3,22 +3,24 @@ using UnityEngine;
 namespace LD60
 {
     /// <summary>
-    /// Applies SpriteRenderer.flipX and the alpha of SpriteRenderer.color to the PaintingDecal shader, which ignores both:
-    /// the sprite UV range and flip state are sent per renderer so the shader mirrors the UVs, and the alpha as _Opacity.
+    /// Applies SpriteRenderer.flipX and SpriteRenderer.color to the PaintingDecal shader, which ignores both:
+    /// the sprite UV range and flip state are sent per renderer so the shader mirrors the UVs, the color as _Tint
+    /// and its alpha as _Opacity.
     /// Requires sprites imported with the Full Rect mesh type.
     /// </summary>
     [ExecuteAlways]
     [RequireComponent(typeof(SpriteRenderer))]
-    public class PaintingSpriteFlip : MonoBehaviour
+    public class PaintingSpriteSync : MonoBehaviour
     {
         static readonly int SpriteFlipRectId = Shader.PropertyToID("_SpriteFlipRect");
         static readonly int OpacityId = Shader.PropertyToID("_Opacity");
+        static readonly int TintId = Shader.PropertyToID("_Tint");
 
         SpriteRenderer spriteRenderer;
         MaterialPropertyBlock propertyBlock;
         Sprite appliedSprite;
         bool appliedFlip;
-        float appliedAlpha;
+        Color appliedColor;
 
         void OnEnable()
         {
@@ -31,8 +33,8 @@ namespace LD60
         {
             Sprite sprite = spriteRenderer.sprite;
             bool flip = spriteRenderer.flipX;
-            float alpha = spriteRenderer.color.a;
-            if (sprite == null || (sprite == appliedSprite && flip == appliedFlip && alpha == appliedAlpha))
+            Color color = spriteRenderer.color;
+            if (sprite == null || (sprite == appliedSprite && flip == appliedFlip && color == appliedColor))
             {
                 return;
             }
@@ -47,11 +49,12 @@ namespace LD60
 
             spriteRenderer.GetPropertyBlock(propertyBlock);
             propertyBlock.SetVector(SpriteFlipRectId, new Vector4(uMin, uMax, flip ? 1f : 0f, 0f));
-            propertyBlock.SetFloat(OpacityId, alpha);
+            propertyBlock.SetColor(TintId, color);
+            propertyBlock.SetFloat(OpacityId, color.a);
             spriteRenderer.SetPropertyBlock(propertyBlock);
             appliedSprite = sprite;
             appliedFlip = flip;
-            appliedAlpha = alpha;
+            appliedColor = color;
         }
     }
 }

@@ -89,7 +89,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: -1311472332, guid: 116518e2c41c9bd40a3ac036ce09dcbf, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.89411765, b: 0.8039216, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -226,7 +226,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe3cf7d178a7492cb9df9c239bc09d09, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: LD60.Runtime::LD60.PaintingSpriteFlip
+  m_EditorClassIdentifier: LD60.Runtime::LD60.PaintingSpriteSync
 --- !u!114 &1273781892046349891
 MonoBehaviour:
   m_ObjectHideFlags: 0
