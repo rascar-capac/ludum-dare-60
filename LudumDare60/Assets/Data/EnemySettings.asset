@@ -27,3 +27,5 @@ MonoBehaviour:
     m_Bits: 64
   wallCheckDistance: 0.1
   ledgeCheckDepth: 0.5
+  fadeOutDuration: 0.4
+  fadeInDuration: 0.6

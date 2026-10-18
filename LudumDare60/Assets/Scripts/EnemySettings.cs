@@ -37,6 +37,13 @@ namespace LD60
         [Tooltip("Depth below the front edge checked for ground. The enemy stops at ledges deeper than that.")]
         [SerializeField, Min(0f)] float ledgeCheckDepth = 0.5f;
 
+        [Header("Respawn")]
+        [Tooltip("Duration of the alpha fade out before moving back to the initial position when the avatar respawns.")]
+        [SerializeField, Min(0f)] float fadeOutDuration = 0.4f;
+
+        [Tooltip("Duration of the alpha fade in at the initial position when the avatar respawns.")]
+        [SerializeField, Min(0f)] float fadeInDuration = 0.6f;
+
         public float ViewDistance => viewDistance;
         public float ViewAngle => viewAngle;
         public LayerMask SightBlockingMask => sightBlockingMask;
@@ -47,6 +54,8 @@ namespace LD60
         public LayerMask GroundMask => groundMask;
         public float WallCheckDistance => wallCheckDistance;
         public float LedgeCheckDepth => ledgeCheckDepth;
+        public float FadeOutDuration => fadeOutDuration;
+        public float FadeInDuration => fadeInDuration;
 
         /// <summary>Rigidbody2D.gravityScale that produces gravity with the project's Physics2D gravity.</summary>
         public float GravityScale

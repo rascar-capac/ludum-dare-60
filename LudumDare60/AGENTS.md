@@ -94,6 +94,7 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 - Des humains peuvent soit lancer des armes, soit frapper quand l’avatar est trop proche.
 - Les humains et animaux disparaissent s’ils se font rattraper par la caméra.
 - Si le joueur les tuent, ils disparaissent aussi.
+- À chaque (ré)apparition de l'avatar, tous les ennemis reviennent à leur position et état initiaux avec un fondu sortant puis entrant, y compris ceux qui ont disparu. Leur mort (`EnemyController.Kill()`) est instantanée avec un burst de particules, et désactive le GameObject : ne jamais les détruire.
 
 ### Pick ups
 

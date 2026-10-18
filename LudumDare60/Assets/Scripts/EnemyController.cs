@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace LD60
@@ -7,10 +9,13 @@ namespace LD60
     /// Once the avatar is out of sight, runs to the last position where it was seen and stops there.
     /// Walls and ledges stop the enemy: it then waits at the closest reachable position.
     /// Kills the avatar on contact.
+    /// Killing it hides it instantly with a particle burst. Its GameObject is only deactivated, so that ResetAll can bring it back.
+    /// ResetAll fades it out, moves it back to its initial position and state, then fades it in (inert during the whole sequence).
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
     public class EnemyController : MonoBehaviour
     {
+        static readonly List<EnemyController> enemies = new();
         static readonly int IsRunningHash = Animator.StringToHash("IsRunning");
 
         enum State { Idle, Chasing, Searching }
@@ -18,6 +23,7 @@ namespace LD60
         [SerializeField] EnemySettings settings;
         [Tooltip("Found in the scene when left empty.")]
         [SerializeField] PlayerDeath target;
+        [SerializeField] ParticleSystem deathBurstPrefab;
 
         Rigidbody2D body;
         Collider2D bodyCollider;
@@ -27,9 +33,14 @@ namespace LD60
         Animator animator;
         State state;
         Vector2 lastSeenPosition;
+        Vector3 initialPosition;
+        bool initialFlipX;
+        bool respawning;
 
         void Awake()
         {
+            // Registered for the whole lifetime, not only while active, so that killed enemies can be reset.
+            enemies.Add(this);
             body = GetComponent<Rigidbody2D>();
             bodyCollider = GetComponent<Collider2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -43,11 +54,139 @@ namespace LD60
                 targetCollider = target.GetComponent<Collider2D>();
                 targetBody = target.GetComponent<Rigidbody2D>();
             }
+            initialPosition = transform.position;
+            initialFlipX = spriteRenderer != null && spriteRenderer.flipX;
+        }
+
+        void OnDestroy() => enemies.Remove(this);
+
+        /// <summary>Makes the enemy disappear instantly with a particle burst, until the next ResetAll.</summary>
+        public void Kill()
+        {
+            if (!gameObject.activeSelf || respawning)
+            {
+                return;
+            }
+            if (deathBurstPrefab != null)
+            {
+                Vector3 center = bodyCollider.bounds.center;
+                center.z = deathBurstPrefab.transform.position.z;
+                Instantiate(deathBurstPrefab, center, deathBurstPrefab.transform.rotation);
+            }
+            gameObject.SetActive(false);
+        }
+
+        /// <summary>Kills every active enemy.</summary>
+        public static void KillAll()
+        {
+            foreach (EnemyController enemy in enemies)
+            {
+                enemy.Kill();
+            }
+        }
+
+        /// <summary>
+        /// Brings every enemy, killed ones included, back to its initial position and state with a fade out then a fade in.
+        /// Enemies already in their initial state are reset without fading.
+        /// </summary>
+        public static void ResetAll()
+        {
+            foreach (EnemyController enemy in enemies)
+            {
+                enemy.Respawn();
+            }
+        }
+
+        void Respawn()
+        {
+            bool visible = gameObject.activeSelf;
+            gameObject.SetActive(true);
+            StopAllCoroutines();
+            if (visible && IsInInitialState())
+            {
+                ResetState();
+                SetAlpha(1f);
+                body.simulated = true;
+                respawning = false;
+                return;
+            }
+            StartCoroutine(RespawnSequence(visible));
+        }
+
+        IEnumerator RespawnSequence(bool fadeOut)
+        {
+            respawning = true;
+            body.simulated = false;
+            SetRunning(false);
+            if (fadeOut && settings != null)
+            {
+                yield return Fade(GetAlpha(), 0f, settings.FadeOutDuration);
+            }
+
+            ResetState();
+            SetAlpha(0f);
+            if (settings != null)
+            {
+                yield return Fade(0f, 1f, settings.FadeInDuration);
+            }
+            SetAlpha(1f);
+            body.simulated = true;
+            respawning = false;
+        }
+
+        IEnumerator Fade(float from, float to, float duration)
+        {
+            for (float time = 0f; time < duration; time += Time.deltaTime)
+            {
+                SetAlpha(Mathf.Lerp(from, to, time / duration));
+                yield return null;
+            }
+            SetAlpha(to);
+        }
+
+        bool IsInInitialState()
+        {
+            return ((Vector2)(transform.position - initialPosition)).sqrMagnitude < 0.0001f
+                && (spriteRenderer == null || spriteRenderer.flipX == initialFlipX);
+        }
+
+        void ResetState()
+        {
+            transform.position = initialPosition;
+            body.position = initialPosition;
+            body.linearVelocity = Vector2.zero;
+            state = State.Idle;
+            if (spriteRenderer != null)
+            {
+                spriteRenderer.flipX = initialFlipX;
+            }
+            SetRunning(false);
+        }
+
+        void SetRunning(bool value)
+        {
+            if (animator != null)
+            {
+                animator.SetBool(IsRunningHash, value);
+            }
+        }
+
+        float GetAlpha() => spriteRenderer != null ? spriteRenderer.color.a : 1f;
+
+        void SetAlpha(float alpha)
+        {
+            if (spriteRenderer == null)
+            {
+                return;
+            }
+            Color color = spriteRenderer.color;
+            color.a = alpha;
+            spriteRenderer.color = color;
         }
 
         void FixedUpdate()
         {
-            if (settings == null)
+            if (settings == null || respawning)
             {
                 return;
             }
@@ -150,10 +289,7 @@ namespace LD60
 
         void UpdateVisuals(float direction)
         {
-            if (animator != null)
-            {
-                animator.SetBool(IsRunningHash, Mathf.Abs(body.linearVelocity.x) > 0.1f);
-            }
+            SetRunning(Mathf.Abs(body.linearVelocity.x) > 0.1f);
             if (spriteRenderer != null && direction != 0f)
             {
                 spriteRenderer.flipX = direction < 0f;

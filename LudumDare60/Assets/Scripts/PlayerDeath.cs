@@ -7,6 +7,7 @@ namespace LD60
     /// Kills the player when the left edge of the camera catches them or when they fall below the screen,
     /// then moves the camera back and respawns the player at the last reached Checkpoint with a fade in.
     /// The level starts with the same spawn sequence at the first Checkpoint, the camera being placed instantly.
+    /// Every enemy is reset to its initial position at the start of the spawn sequence, killed ones included.
     /// Without any Checkpoint, the player spawns at their position in the scene.
     /// Controls are disabled for the whole sequence.
     /// </summary>
@@ -121,6 +122,7 @@ namespace LD60
             body.linearVelocity = Vector2.zero;
             body.simulated = false;
             spriteRenderer.enabled = false;
+            EnemyController.ResetAll();
 
             if (scroller != null)
             {
