@@ -17,6 +17,7 @@ GameObject:
   - component: {fileID: 7650470326839406223}
   - component: {fileID: 3918274650192837465}
   - component: {fileID: 1273781892046349891}
+  - component: {fileID: 396667508456941366}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -243,6 +244,20 @@ MonoBehaviour:
   scroller: {fileID: 0}
   settings: {fileID: 11400000, guid: 85b0938926d27ae4c98a22e2b4943578, type: 2}
   deathBurstPrefab: {fileID: 1751089258113717784, guid: 7450c9268c1c7b84198c283870f400d6, type: 3}
+--- !u!114 &396667508456941366
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1184255859858781919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c366b4bb2101004da9f393d7789045a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LD60.Runtime::LD60.PlayerWeapon
+  weapon: 0
+  spear: {fileID: 8020867250007072460}
 --- !u!1 &8020867250007072460
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,7 +277,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &6877240436921146626
 Transform:
   m_ObjectHideFlags: 0

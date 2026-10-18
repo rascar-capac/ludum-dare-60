@@ -2141,6 +2141,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 785517e7830914e4b93b181bdc4a8e82, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LD60.Runtime::LD60.DebugMenu
+  playerWeapon: {fileID: 2004913594}
 --- !u!4 &1898381548
 Transform:
   m_ObjectHideFlags: 0
@@ -2372,6 +2373,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
+--- !u!114 &2004913594 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 396667508456941366, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
+  m_PrefabInstance: {fileID: 2004913593}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c366b4bb2101004da9f393d7789045a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LD60.Runtime::LD60.PlayerWeapon
 --- !u!1 &2067199282
 GameObject:
   m_ObjectHideFlags: 0
