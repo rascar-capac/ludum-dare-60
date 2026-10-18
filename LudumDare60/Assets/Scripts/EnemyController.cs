@@ -24,6 +24,7 @@ namespace LD60
         [Tooltip("Found in the scene when left empty.")]
         [SerializeField] PlayerDeath target;
         [SerializeField] ParticleSystem deathBurstPrefab;
+        [SerializeField] AudioClip deathSound;
 
         Rigidbody2D body;
         Collider2D bodyCollider;
@@ -67,6 +68,7 @@ namespace LD60
             {
                 return;
             }
+            SfxPlayer.Play(deathSound);
             if (deathBurstPrefab != null)
             {
                 Vector3 center = bodyCollider.bounds.center;

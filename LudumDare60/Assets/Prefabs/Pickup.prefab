@@ -138,4 +138,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: LD60.Runtime::LD60.Pickup
   weapon: 0
   burstPrefab: {fileID: 1751089258113717784, guid: 355c68d164620b44a8f522d837424d6c, type: 3}
+  collectSound: {fileID: 8300000, guid: a3bb57ac9d26ff24e8240b62285e91e5, type: 3}
   respawnSettings: {fileID: 11400000, guid: 85b0938926d27ae4c98a22e2b4943578, type: 2}

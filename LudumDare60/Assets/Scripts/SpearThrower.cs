@@ -29,6 +29,7 @@ namespace LD60
 
         [SerializeField] SpearThrowSettings settings;
         [SerializeField] ThrownSpear spearPrefab;
+        [SerializeField] AudioClip throwSound;
         [SerializeField] CameraScroller scroller;
 
         [Tooltip("Start of the trajectory relative to the player, authored facing right.")]
@@ -153,6 +154,7 @@ namespace LD60
             animator.SetTrigger(ThrowHash);
             throwPending = true;
             weapon.HeldItemHidden = true;
+            SfxPlayer.Play(throwSound);
             if (spearPrefab == null)
             {
                 return;

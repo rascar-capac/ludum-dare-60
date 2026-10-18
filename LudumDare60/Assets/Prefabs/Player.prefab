@@ -246,6 +246,7 @@ MonoBehaviour:
   scroller: {fileID: 0}
   settings: {fileID: 11400000, guid: 85b0938926d27ae4c98a22e2b4943578, type: 2}
   deathBurstPrefab: {fileID: 1751089258113717784, guid: 7450c9268c1c7b84198c283870f400d6, type: 3}
+  deathSound: {fileID: 8300000, guid: fc0e6672f02ebd643972dbc58476fd61, type: 3}
 --- !u!114 &396667508456941366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -277,6 +278,7 @@ MonoBehaviour:
   aimPointAction: {fileID: 1054132383583890850, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   settings: {fileID: 11400000, guid: 8ce594eb280206a438b214966100ebd6, type: 2}
   spearPrefab: {fileID: 6493971057993558607, guid: e635045ecb70bf24cb2f3eb1d4dbf174, type: 3}
+  throwSound: {fileID: 8300000, guid: 741cf4cab424c7c4a9645a2a1dd6e86a, type: 3}
   scroller: {fileID: 0}
   throwOrigin: {x: 0.54, y: 0.94}
 --- !u!1001 &4673500207867703606

@@ -17,6 +17,7 @@ namespace LD60
 
         [SerializeField] WeaponType weapon;
         [SerializeField] ParticleSystem burstPrefab;
+        [SerializeField] AudioClip collectSound;
         [Tooltip("Gives the duration of the fade in when the pickup comes back.")]
         [SerializeField] RespawnSettings respawnSettings;
 
@@ -82,6 +83,7 @@ namespace LD60
             }
 
             gameObject.SetActive(false);
+            SfxPlayer.Play(collectSound);
             if (burstPrefab != null)
             {
                 Vector3 position = transform.position;

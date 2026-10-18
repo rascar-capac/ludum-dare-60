@@ -19,6 +19,7 @@ namespace LD60
         [SerializeField] CameraScroller scroller;
         [SerializeField] RespawnSettings settings;
         [SerializeField] ParticleSystem deathBurstPrefab;
+        [SerializeField] AudioClip deathSound;
 
         Rigidbody2D body;
         Collider2D bodyCollider;
@@ -96,6 +97,7 @@ namespace LD60
             body.linearVelocity = Vector2.zero;
             body.simulated = false;
             spriteRenderer.enabled = false;
+            SfxPlayer.Play(deathSound);
             if (deathBurstPrefab != null)
             {
                 // After a fall the player is below the screen: raise the burst so it stays visible.
