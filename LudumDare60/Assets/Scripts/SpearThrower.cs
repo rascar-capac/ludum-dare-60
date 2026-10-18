@@ -5,6 +5,8 @@ namespace LD60
 {
     /// <summary>
     /// Throws the held spear toward the facing direction (SpriteRenderer.flipX) when the Player/Attack action is released.
+    /// When the charge is not started from a gamepad or a joystick, the pointer orients the player while charging
+    /// and sets the launch angle, clamped between SpearThrowSettings.MinAimAngle and MaxAimAngle.
     /// The longer the input is held, the faster the spear is launched; a release before SpearThrowSettings.MinChargeTime cancels the throw.
     /// Each throw removes one spear from the player's stock.
     /// Running is locked from the press until the end of the throwing animation. The next spear of the stock is only
@@ -21,6 +23,10 @@ namespace LD60
         static readonly int ThrowingStateHash = Animator.StringToHash("avatar_throwing");
 
         [SerializeField] InputActionReference attackAction;
+
+        [Tooltip("Pointer position in screen space, such as UI/Point.")]
+        [SerializeField] InputActionReference aimPointAction;
+
         [SerializeField] SpearThrowSettings settings;
         [SerializeField] ThrownSpear spearPrefab;
         [SerializeField] CameraScroller scroller;
@@ -34,6 +40,7 @@ namespace LD60
         PlayerController controller;
         float chargeStartTime;
         bool charging;
+        bool aimWithPointer;
         bool throwPending;
         bool throwing;
 
@@ -48,6 +55,8 @@ namespace LD60
         void OnEnable()
         {
             attackAction?.action.Enable();
+            // Not disabled in OnDisable: the action may be shared with the UI input module.
+            aimPointAction?.action.Enable();
         }
 
         void OnDisable()
@@ -76,6 +85,8 @@ namespace LD60
             {
                 charging = true;
                 chargeStartTime = Time.time;
+                InputDevice device = attackAction.action.activeControl?.device;
+                aimWithPointer = aimPointAction != null && !(device is Gamepad || device is Joystick);
             }
             else if (charging && attackAction.action.WasReleasedThisFrame())
             {
@@ -87,9 +98,16 @@ namespace LD60
                 }
             }
 
+            if (charging && aimWithPointer && TryGetPointerWorldPosition(out Vector2 target))
+            {
+                spriteRenderer.flipX = target.x < transform.position.x;
+            }
             UpdateAnimator(charging ? Time.time - chargeStartTime : 0f);
             UpdateThrowLocks();
         }
+
+        /// <summary>Launch angle above the horizontal, in degrees, toward the facing direction, if the spear was thrown now.</summary>
+        public float AimAngle => settings != null ? GetLaunchAngle(GetOrigin(spriteRenderer.flipX)) : 0f;
 
         bool IsThrowing => throwPending || throwing;
 
@@ -140,8 +158,9 @@ namespace LD60
                 return;
             }
 
-            ThrownSpear spear = Instantiate(spearPrefab, GetOrigin(flip), Quaternion.identity);
-            spear.Launch(GetLaunchVelocity(flip, speed), settings, scroller);
+            Vector3 origin = GetOrigin(flip);
+            ThrownSpear spear = Instantiate(spearPrefab, origin, Quaternion.identity);
+            spear.Launch(GetDirection(flip, GetLaunchAngle(origin)) * speed, settings, scroller);
         }
 
         Vector3 GetOrigin(bool flip)
@@ -149,10 +168,35 @@ namespace LD60
             return transform.position + new Vector3(flip ? -throwOrigin.x : throwOrigin.x, throwOrigin.y, 0f);
         }
 
-        Vector2 GetLaunchVelocity(bool flip, float speed)
+        /// <summary>Launch angle above the horizontal, in degrees, toward the pointer when aiming with it.</summary>
+        float GetLaunchAngle(Vector3 origin)
         {
-            float angle = settings.LaunchAngle * Mathf.Deg2Rad;
-            return new Vector2((flip ? -1f : 1f) * Mathf.Cos(angle), Mathf.Sin(angle)) * speed;
+            if (!aimWithPointer || !TryGetPointerWorldPosition(out Vector2 target))
+            {
+                return settings.LaunchAngle;
+            }
+            Vector2 offset = target - (Vector2)origin;
+            float angle = Mathf.Atan2(offset.y, Mathf.Abs(offset.x)) * Mathf.Rad2Deg;
+            return Mathf.Clamp(angle, settings.MinAimAngle, settings.MaxAimAngle);
+        }
+
+        static Vector2 GetDirection(bool flip, float angle)
+        {
+            angle *= Mathf.Deg2Rad;
+            return new Vector2((flip ? -1f : 1f) * Mathf.Cos(angle), Mathf.Sin(angle));
+        }
+
+        bool TryGetPointerWorldPosition(out Vector2 position)
+        {
+            Camera camera = Camera.main;
+            if (aimPointAction == null || camera == null)
+            {
+                position = default;
+                return false;
+            }
+            Vector2 screen = aimPointAction.action.ReadValue<Vector2>();
+            position = camera.ScreenToWorldPoint(new Vector3(screen.x, screen.y, transform.position.z - camera.transform.position.z));
+            return true;
         }
 
         /// <summary>Draws the throw origin and the trajectories at minimum and maximum speed, facing right.</summary>
@@ -165,8 +209,9 @@ namespace LD60
             {
                 return;
             }
-            DrawTrajectory(origin, GetLaunchVelocity(false, settings.MinSpeed));
-            DrawTrajectory(origin, GetLaunchVelocity(false, settings.MaxSpeed));
+            Vector2 direction = GetDirection(false, settings.LaunchAngle);
+            DrawTrajectory(origin, direction * settings.MinSpeed);
+            DrawTrajectory(origin, direction * settings.MaxSpeed);
         }
 
         void DrawTrajectory(Vector3 origin, Vector2 velocity)

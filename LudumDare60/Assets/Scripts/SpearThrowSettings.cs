@@ -19,8 +19,14 @@ namespace LD60
         [SerializeField, Min(0f)] float minSpeed = 6f;
         [SerializeField, Min(0f)] float maxSpeed = 16f;
 
-        [Tooltip("Angle of the launch direction above the horizontal, in degrees, toward the facing direction.")]
+        [Tooltip("Angle of the launch direction above the horizontal, in degrees, toward the facing direction, when not aiming with the pointer.")]
         [SerializeField, Range(-90f, 90f)] float launchAngle = 20f;
+
+        [Tooltip("Lowest launch angle above the horizontal, in degrees, reachable when aiming with the pointer.")]
+        [SerializeField, Range(-90f, 90f)] float minAimAngle = -30f;
+
+        [Tooltip("Highest launch angle above the horizontal, in degrees, reachable when aiming with the pointer.")]
+        [SerializeField, Range(-90f, 90f)] float maxAimAngle = 75f;
 
         [Header("Flight")]
         [SerializeField, Min(0f)] float gravity = 20f;
@@ -33,6 +39,8 @@ namespace LD60
         public float MinSpeed => minSpeed;
         public float MaxSpeed => maxSpeed;
         public float LaunchAngle => launchAngle;
+        public float MinAimAngle => minAimAngle;
+        public float MaxAimAngle => maxAimAngle;
         public float Gravity => gravity;
         public float MinKillSpeed => minKillSpeed;
 
@@ -61,6 +69,7 @@ namespace LD60
         {
             maxChargeTime = Mathf.Max(maxChargeTime, minChargeTime);
             maxSpeed = Mathf.Max(maxSpeed, minSpeed);
+            maxAimAngle = Mathf.Max(maxAimAngle, minAimAngle);
         }
     }
 }
