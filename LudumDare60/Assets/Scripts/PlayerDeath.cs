@@ -8,7 +8,7 @@ namespace LD60
     /// then moves the camera back and respawns the player at the last reached Checkpoint with a fade in.
     /// The level starts with the same spawn sequence at the first Checkpoint, the camera being placed instantly.
     /// Every enemy is reset to its initial position at the start of the spawn sequence, killed ones included.
-    /// The player also loses their weapon, every collected Pickup comes back and every ThrownSpear is removed.
+    /// The player also loses their spears, every collected Pickup comes back and every ThrownSpear is removed.
     /// Without any Checkpoint, the player spawns at their position in the scene.
     /// Controls are disabled for the whole sequence.
     /// </summary>
@@ -132,7 +132,7 @@ namespace LD60
             ThrownSpear.ClearAll();
             if (weapon != null)
             {
-                weapon.Weapon = WeaponType.None;
+                weapon.SpearCount = 0;
             }
 
             if (scroller != null)

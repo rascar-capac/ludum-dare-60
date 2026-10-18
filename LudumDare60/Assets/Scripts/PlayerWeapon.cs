@@ -9,37 +9,67 @@ namespace LD60
     }
 
     /// <summary>
-    /// Weapon currently held by the avatar, shown by activating the matching held item object.
+    /// Stock of spears carried by the avatar, up to MaxSpears. The held spear is shown while the stock is not empty
+    /// and HeldItemHidden is false.
     /// </summary>
     public class PlayerWeapon : MonoBehaviour
     {
-        [SerializeField] WeaponType weapon;
+        [SerializeField, Min(1)] int maxSpears = 5;
+        [SerializeField, Min(0)] int spearCount;
 
         [Header("Held items")]
         [SerializeField] GameObject spear;
 
-        public WeaponType Weapon
+        bool heldItemHidden;
+
+        public int MaxSpears => maxSpears;
+
+        public int SpearCount
         {
-            get => weapon;
+            get => spearCount;
             set
             {
-                weapon = value;
+                spearCount = Mathf.Clamp(value, 0, maxSpears);
                 UpdateHeldItems();
             }
         }
 
-        public bool HasWeapon => weapon != WeaponType.None;
+        /// <summary>Hides the held spear whatever the stock, e.g. while a throw is playing.</summary>
+        public bool HeldItemHidden
+        {
+            get => heldItemHidden;
+            set
+            {
+                heldItemHidden = value;
+                UpdateHeldItems();
+            }
+        }
+
+        public WeaponType Weapon => spearCount > 0 ? WeaponType.Spear : WeaponType.None;
+
+        public bool HasWeapon => Weapon != WeaponType.None;
 
         void Awake()
         {
-            UpdateHeldItems();
+            SpearCount = spearCount;
+        }
+
+        /// <summary>Adds one weapon of the given type to the stock. Returns false when the stock is already full.</summary>
+        public bool TryAdd(WeaponType type)
+        {
+            if (type != WeaponType.Spear || spearCount >= maxSpears)
+            {
+                return false;
+            }
+            SpearCount++;
+            return true;
         }
 
         void UpdateHeldItems()
         {
             if (spear != null)
             {
-                spear.SetActive(weapon == WeaponType.Spear);
+                spear.SetActive(spearCount > 0 && !heldItemHidden);
             }
         }
     }

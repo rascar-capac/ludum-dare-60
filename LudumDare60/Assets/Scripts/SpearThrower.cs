@@ -6,8 +6,9 @@ namespace LD60
     /// <summary>
     /// Throws the held spear toward the facing direction (SpriteRenderer.flipX) when the Player/Attack action is released.
     /// The longer the input is held, the faster the spear is launched; a release before SpearThrowSettings.MinChargeTime cancels the throw.
-    /// The player loses the weapon once it is thrown.
-    /// Running is locked from the press until the end of the throwing animation.
+    /// Each throw removes one spear from the player's stock.
+    /// Running is locked from the press until the end of the throwing animation. The next spear of the stock is only
+    /// shown, and can only be charged, once the throwing animation is over; if the input is held at that moment, a new charge starts.
     /// Animator: IsAiming is set from MinChargeTime until the release, AimProgress goes from 0 at MinChargeTime to 1 at MaxChargeTime
     /// (motion time of the aiming state) and Throw is triggered at the release.
     /// </summary>
@@ -56,7 +57,7 @@ namespace LD60
             throwPending = false;
             throwing = false;
             UpdateAnimator(0f);
-            UpdateRunLock();
+            UpdateThrowLocks();
         }
 
         void Update()
@@ -67,11 +68,11 @@ namespace LD60
                 return;
             }
 
-            if (weapon.Weapon != WeaponType.Spear)
+            if (weapon.Weapon != WeaponType.Spear || IsThrowing)
             {
                 charging = false;
             }
-            else if (attackAction.action.WasPressedThisFrame())
+            else if (!charging && attackAction.action.IsPressed())
             {
                 charging = true;
                 chargeStartTime = Time.time;
@@ -87,8 +88,10 @@ namespace LD60
             }
 
             UpdateAnimator(charging ? Time.time - chargeStartTime : 0f);
-            UpdateRunLock();
+            UpdateThrowLocks();
         }
+
+        bool IsThrowing => throwPending || throwing;
 
         /// <summary>The throw lasts until the animator has entered then left the throwing state.</summary>
         void UpdateThrowingState()
@@ -116,20 +119,22 @@ namespace LD60
             animator.SetFloat(AimProgressHash, progress);
         }
 
-        void UpdateRunLock()
+        void UpdateThrowLocks()
         {
+            weapon.HeldItemHidden = IsThrowing;
             if (controller != null)
             {
-                controller.RunLocked = charging || throwPending || throwing;
+                controller.RunLocked = charging || IsThrowing;
             }
         }
 
         void Throw(float speed)
         {
             bool flip = spriteRenderer.flipX;
-            weapon.Weapon = WeaponType.None;
+            weapon.SpearCount--;
             animator.SetTrigger(ThrowHash);
             throwPending = true;
+            weapon.HeldItemHidden = true;
             if (spearPrefab == null)
             {
                 return;

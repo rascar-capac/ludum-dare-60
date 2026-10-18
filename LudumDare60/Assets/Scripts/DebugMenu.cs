@@ -17,11 +17,17 @@ namespace LD60
             }
             if (playerWeapon != null)
             {
-                bool hasSpear = playerWeapon.Weapon == WeaponType.Spear;
-                if (GUILayout.Toggle(hasSpear, "Spear") != hasSpear)
+                GUILayout.BeginHorizontal();
+                GUILayout.Label($"Spears {playerWeapon.SpearCount}/{playerWeapon.MaxSpears}");
+                if (GUILayout.Button("-"))
                 {
-                    playerWeapon.Weapon = hasSpear ? WeaponType.None : WeaponType.Spear;
+                    playerWeapon.SpearCount--;
                 }
+                if (GUILayout.Button("+"))
+                {
+                    playerWeapon.SpearCount++;
+                }
+                GUILayout.EndHorizontal();
             }
             GUILayout.EndArea();
         }

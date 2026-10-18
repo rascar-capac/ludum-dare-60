@@ -257,7 +257,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c366b4bb2101004da9f393d7789045a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: LD60.Runtime::LD60.PlayerWeapon
-  weapon: 0
+  maxSpears: 5
+  spearCount: 0
   spear: {fileID: 7591200605204331302}
 --- !u!114 &4623299943796916462
 MonoBehaviour:

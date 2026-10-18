@@ -6,7 +6,8 @@ namespace LD60
 {
     /// <summary>
     /// Item lying in the level that the player collects by touching its trigger: the pickup is deactivated,
-    /// the optional burst is spawned at its position and the weapon is given to the player.
+    /// the optional burst is spawned at its position and the weapon is added to the player's stock.
+    /// Not collected while the player's stock is full.
     /// Its GameObject is only deactivated, so that ResetAll can bring it back with an alpha fade in.
     /// </summary>
     [RequireComponent(typeof(Collider2D))]
@@ -75,7 +76,7 @@ namespace LD60
             PlayerWeapon playerWeapon = other.attachedRigidbody != null
                 ? other.attachedRigidbody.GetComponent<PlayerWeapon>()
                 : null;
-            if (playerWeapon == null)
+            if (playerWeapon == null || !playerWeapon.TryAdd(weapon))
             {
                 return;
             }
@@ -87,7 +88,6 @@ namespace LD60
                 position.z = burstPrefab.transform.position.z;
                 Instantiate(burstPrefab, position, burstPrefab.transform.rotation);
             }
-            playerWeapon.Weapon = weapon;
         }
     }
 }
