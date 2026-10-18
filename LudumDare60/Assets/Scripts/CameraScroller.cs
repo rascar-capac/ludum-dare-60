@@ -41,19 +41,23 @@ namespace LD60
             transform.position += Vector3.right * (CurrentSpeed * Time.deltaTime);
         }
 
-        /// <summary>Stops scrolling and moves the camera back to its start position with an ease in-out.</summary>
-        public IEnumerator ReturnToStart(float duration)
+        /// <summary>Stops scrolling and moves the camera to the given x, at its start height and depth, with an ease in-out.</summary>
+        public IEnumerator ReturnTo(float x, float duration)
         {
             scrolling = false;
             CurrentSpeed = 0f;
             Vector3 from = transform.position;
+            Vector3 to = new(x, startPosition.y, startPosition.z);
             for (float time = 0f; time < duration; time += Time.deltaTime)
             {
-                transform.position = Vector3.Lerp(from, startPosition, Mathf.SmoothStep(0f, 1f, time / duration));
+                transform.position = Vector3.Lerp(from, to, Mathf.SmoothStep(0f, 1f, time / duration));
                 yield return null;
             }
-            transform.position = startPosition;
+            MoveTo(x);
         }
+
+        /// <summary>Places the camera instantly at the given x, at its start height and depth.</summary>
+        public void MoveTo(float x) => transform.position = new Vector3(x, startPosition.y, startPosition.z);
 
         /// <summary>Half of the visible width on the plane at the given world z.</summary>
         public float HalfWidthAt(float z) => HalfHeightAt(z) * Camera.aspect;

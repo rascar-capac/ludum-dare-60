@@ -5,9 +5,12 @@ namespace LD60
 {
     /// <summary>
     /// Kills the player when the left edge of the camera catches them or when they fall below the screen,
-    /// then moves the camera back to its start and respawns the player at their start position with a fade in.
+    /// then moves the camera back and respawns the player at the last reached Checkpoint with a fade in.
+    /// The level starts with the same spawn sequence at the first Checkpoint, the camera being placed instantly.
+    /// Without any Checkpoint, the player spawns at their position in the scene.
     /// Controls are disabled for the whole sequence.
     /// </summary>
+    [DefaultExecutionOrder(-10)] // Places the player and the camera before the other Start, which read their positions.
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
     public class PlayerDeath : MonoBehaviour
     {
@@ -21,6 +24,7 @@ namespace LD60
         PlayerController controller;
         CameraPush cameraPush;
         Vector3 spawnPosition;
+        Checkpoint currentCheckpoint;
 
         public bool IsDead { get; private set; }
 
@@ -34,11 +38,32 @@ namespace LD60
             spawnPosition = transform.position;
         }
 
+        void Start()
+        {
+            // Checkpoints register in OnEnable, so they are all known by now.
+            Checkpoint first = Checkpoint.GetFirst();
+            if (first != null)
+            {
+                SetCheckpoint(first);
+            }
+            if (settings != null)
+            {
+                StartCoroutine(SpawnSequence(0f));
+            }
+        }
+
         void FixedUpdate()
         {
             if (IsDead || scroller == null)
             {
                 return;
+            }
+
+            Checkpoint checkpoint = Checkpoint.GetLastReached(body.position.x);
+            if (checkpoint != null && (currentCheckpoint == null || checkpoint.ActivationX > currentCheckpoint.ActivationX))
+            {
+                SetCheckpoint(checkpoint);
+                checkpoint.Activate();
             }
 
             Bounds bounds = bodyCollider.bounds;
@@ -82,14 +107,39 @@ namespace LD60
             }
 
             yield return new WaitForSeconds(settings.DeathDelay);
+            yield return SpawnSequence(settings.CameraReturnDuration);
+        }
+
+        /// <summary>
+        /// Moves the camera to the spawn position, then places the player there, facing right, and fades them in.
+        /// With a camera duration of 0 the camera and the player are placed synchronously.
+        /// </summary>
+        IEnumerator SpawnSequence(float cameraDuration)
+        {
+            IsDead = true;
+            SetControlsEnabled(false);
+            body.linearVelocity = Vector2.zero;
+            body.simulated = false;
+            spriteRenderer.enabled = false;
+
             if (scroller != null)
             {
-                yield return scroller.ReturnToStart(settings.CameraReturnDuration);
+                scroller.Scrolling = false;
+                float cameraX = spawnPosition.x + scroller.HalfWidthAt(0f) * (1f - 2f * settings.SpawnScreenX);
+                if (cameraDuration > 0f)
+                {
+                    yield return scroller.ReturnTo(cameraX, cameraDuration);
+                }
+                else
+                {
+                    scroller.MoveTo(cameraX);
+                }
             }
 
             transform.position = spawnPosition;
             body.position = spawnPosition;
             body.simulated = true;
+            spriteRenderer.flipX = false;
             SetAlpha(0f);
             spriteRenderer.enabled = true;
             for (float time = 0f; time < settings.FadeInDuration; time += Time.deltaTime)
@@ -105,6 +155,13 @@ namespace LD60
                 scroller.Scrolling = true;
             }
             IsDead = false;
+        }
+
+        void SetCheckpoint(Checkpoint checkpoint)
+        {
+            currentCheckpoint = checkpoint;
+            Vector3 position = checkpoint.SpawnPosition;
+            spawnPosition = new Vector3(position.x, position.y, spawnPosition.z);
         }
 
         void SetControlsEnabled(bool value)

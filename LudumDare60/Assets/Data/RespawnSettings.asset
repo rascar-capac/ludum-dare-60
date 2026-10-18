@@ -15,3 +15,4 @@ MonoBehaviour:
   deathDelay: 0.8
   cameraReturnDuration: 1.2
   fadeInDuration: 0.6
+  spawnScreenX: 0.25

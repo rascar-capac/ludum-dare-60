@@ -17,8 +17,12 @@ namespace LD60
         [Tooltip("Duration of the alpha fade in of the respawned player.")]
         [SerializeField, Min(0f)] float fadeInDuration = 0.6f;
 
+        [Tooltip("Horizontal position of the spawn point on screen once the camera is placed: 0 = left edge, 1 = right edge.")]
+        [SerializeField, Range(0f, 1f)] float spawnScreenX = 0.25f;
+
         public float DeathDelay => deathDelay;
         public float CameraReturnDuration => cameraReturnDuration;
         public float FadeInDuration => fadeInDuration;
+        public float SpawnScreenX => spawnScreenX;
     }
 }
