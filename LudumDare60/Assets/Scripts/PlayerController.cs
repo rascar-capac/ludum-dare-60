@@ -5,6 +5,7 @@ namespace LD60
 {
     /// <summary>
     /// Run and jump with keyboard or gamepad, using the Player/Move and Player/Jump actions.
+    /// While RunLocked is set, the horizontal input is ignored and the facing direction kept: the player slows down to a stop.
     /// </summary>
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
     public class PlayerController : MonoBehaviour
@@ -28,6 +29,8 @@ namespace LD60
         bool jumpReleased;
 
         public bool IsGrounded { get; private set; }
+
+        public bool RunLocked { get; set; }
 
         void Awake()
         {
@@ -86,7 +89,7 @@ namespace LD60
             }
 
             Vector2 velocity = body.linearVelocity;
-            float input = moveAction != null ? moveAction.action.ReadValue<Vector2>().x : 0f;
+            float input = ReadRunInput();
 
             float targetSpeed = input * settings.MaxSpeed;
             float rate = Mathf.Abs(input) > 0.01f ? settings.Acceleration : settings.Deceleration;
@@ -120,7 +123,7 @@ namespace LD60
 
         void UpdateVisuals()
         {
-            float input = moveAction != null ? moveAction.action.ReadValue<Vector2>().x : 0f;
+            float input = ReadRunInput();
             bool isRunning = Mathf.Abs(input) > 0.01f;
 
             if (animator != null)
@@ -132,6 +135,8 @@ namespace LD60
                 spriteRenderer.flipX = input < 0f;
             }
         }
+
+        float ReadRunInput() => moveAction != null && !RunLocked ? moveAction.action.ReadValue<Vector2>().x : 0f;
 
         bool CheckGrounded()
         {

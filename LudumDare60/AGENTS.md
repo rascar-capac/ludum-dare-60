@@ -100,6 +100,7 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 
 - Placés à la main dans le décor.
 - Armes comme des lances, à usage unique. On peut récupérer plusieurs armes du même type, mais ramasser un nouveau type d’arme discard les autres armes.
+  - La lance se lance en relâchant `Player/Attack` (`SpearThrower`, réglages dans `Data/SpearThrowSettings`) : la durée d’appui donne la vitesse, en dessous du seuil le lancer est annulé. La course est bloquée de l’appui à la fin de l’animation de lancer ; l’état `avatar_aiming` est piloté en motion time par `AimProgress`. La `ThrownSpear` est physique, ne collide qu'avec le layer `Ground` et tue les ennemis via un trigger au-delà d'une vitesse minimum. Elle est détruite hors caméra (gauche, droite, bas) ou au respawn.
   - Ramasser une arme quand on a les mains vides ou quand elle est du même type se fait automatiquement. Pour swap avec une autre arme, il faut utiliser un input.
 - Bûches de bois utilisées comme bouclier, à usage unique. On ne peut en ramasser qu’un à la fois.
 

@@ -2419,6 +2419,10 @@ PrefabInstance:
       propertyPath: scroller
       value: 
       objectReference: {fileID: 685373887}
+    - target: {fileID: 4623299943796916462, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
+      propertyPath: scroller
+      value: 
+      objectReference: {fileID: 685373887}
     - target: {fileID: 5322480965764343025, guid: 2d405e0e91688a5489a1b58a1eee023e, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.62

@@ -8,7 +8,7 @@ namespace LD60
     /// then moves the camera back and respawns the player at the last reached Checkpoint with a fade in.
     /// The level starts with the same spawn sequence at the first Checkpoint, the camera being placed instantly.
     /// Every enemy is reset to its initial position at the start of the spawn sequence, killed ones included.
-    /// The player also loses their weapon and every collected Pickup comes back.
+    /// The player also loses their weapon, every collected Pickup comes back and every ThrownSpear is removed.
     /// Without any Checkpoint, the player spawns at their position in the scene.
     /// Controls are disabled for the whole sequence.
     /// </summary>
@@ -26,6 +26,7 @@ namespace LD60
         PlayerController controller;
         CameraPush cameraPush;
         PlayerWeapon weapon;
+        SpearThrower thrower;
         Vector3 spawnPosition;
         Checkpoint currentCheckpoint;
 
@@ -39,6 +40,7 @@ namespace LD60
             controller = GetComponent<PlayerController>();
             cameraPush = GetComponent<CameraPush>();
             weapon = GetComponent<PlayerWeapon>();
+            thrower = GetComponent<SpearThrower>();
             spawnPosition = transform.position;
         }
 
@@ -127,6 +129,7 @@ namespace LD60
             spriteRenderer.enabled = false;
             EnemyController.ResetAll();
             Pickup.ResetAll();
+            ThrownSpear.ClearAll();
             if (weapon != null)
             {
                 weapon.Weapon = WeaponType.None;
@@ -183,6 +186,10 @@ namespace LD60
             if (cameraPush != null)
             {
                 cameraPush.enabled = value;
+            }
+            if (thrower != null)
+            {
+                thrower.enabled = value;
             }
         }
 

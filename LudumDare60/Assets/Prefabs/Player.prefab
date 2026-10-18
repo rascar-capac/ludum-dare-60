@@ -18,6 +18,7 @@ GameObject:
   - component: {fileID: 3918274650192837465}
   - component: {fileID: 1273781892046349891}
   - component: {fileID: 396667508456941366}
+  - component: {fileID: 4623299943796916462}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -258,6 +259,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: LD60.Runtime::LD60.PlayerWeapon
   weapon: 0
   spear: {fileID: 7591200605204331302}
+--- !u!114 &4623299943796916462
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1184255859858781919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6762f4679e3f3394da68f2ab6a9e2e7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LD60.Runtime::LD60.SpearThrower
+  attackAction: {fileID: 1903506563957944628, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  settings: {fileID: 11400000, guid: 8ce594eb280206a438b214966100ebd6, type: 2}
+  spearPrefab: {fileID: 6493971057993558607, guid: e635045ecb70bf24cb2f3eb1d4dbf174, type: 3}
+  scroller: {fileID: 0}
+  throwOrigin: {x: 0.54, y: 0.94}
 --- !u!1001 &4673500207867703606
 PrefabInstance:
   m_ObjectHideFlags: 0
