@@ -112,6 +112,7 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 
 - Le HUD est très minimaliste.
 - Les objets possédés (armes, bouclier) sont indiqués dans le coin inférieur droit.
+  - GameObject `HUD` de la scène (UIDocument + `SpearHud`), UXML/USS/PanelSettings dans `Data/UI/`. Les slots de lances se remplissent via la classe `spear-slot--full`.
 - Des tutoriels peuvent s’afficher sur la partie supérieure de l’écran, mais ils sont des dessins sur la paroi et ne font donc techniquement pas partie du HUD.
   - Ils s’affichent tant que l’avatar reste dans une certaine zone, et le side scroll est désactivé tant qu’il y reste.
 
