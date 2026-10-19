@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5857057712236451190}
   - component: {fileID: 7467522160159774128}
   - component: {fileID: 2225711744612850885}
+  - component: {fileID: 5332881287523903355}
   m_Layer: 0
   m_Name: Enemy
   m_TagString: Untagged
@@ -210,3 +211,15 @@ MonoBehaviour:
   target: {fileID: 0}
   deathBurstPrefab: {fileID: 1751089258113717784, guid: 7450c9268c1c7b84198c283870f400d6, type: 3}
   deathSound: {fileID: 8300000, guid: fc0e6672f02ebd643972dbc58476fd61, type: 3}
+--- !u!114 &5332881287523903355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4548185993291303165}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85540d5e3b923b14b90b658ef412af5d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: LD60.Runtime::LD60.KillsPlayerOnContact

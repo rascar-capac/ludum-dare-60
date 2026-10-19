@@ -90,6 +90,7 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
 ### Obstacles
 
 - Buissons et rochers sont à éviter avec un saut.
+- Tout contact mortel (ennemis, buissons) passe par le composant `KillsPlayerOnContact` (collision non-trigger avec le Rigidbody2D de l’avatar).
 - Des animaux peuvent charger en ligne droite ou mordre quand l’avatar est trop proche.
 - Des humains peuvent soit lancer des armes, soit frapper quand l’avatar est trop proche.
 - Les humains et animaux disparaissent s’ils se font rattraper par la caméra.

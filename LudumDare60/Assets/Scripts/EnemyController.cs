@@ -8,11 +8,11 @@ namespace LD60
     /// Stays still until it sees the avatar in its view cone (facing given by SpriteRenderer.flipX), then runs toward it while it is in sight.
     /// Once the avatar is out of sight, runs to the last position where it was seen and stops there.
     /// Walls and ledges stop the enemy: it then waits at the closest reachable position.
-    /// Kills the avatar on contact.
+    /// Kills the avatar on contact (see KillsPlayerOnContact).
     /// Killing it hides it instantly with a particle burst. Its GameObject is only deactivated, so that ResetAll can bring it back.
     /// ResetAll fades it out, moves it back to its initial position and state, then fades it in (inert during the whole sequence).
     /// </summary>
-    [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D))]
+    [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(KillsPlayerOnContact))]
     public class EnemyController : MonoBehaviour
     {
         static readonly List<EnemyController> enemies = new();
@@ -29,7 +29,6 @@ namespace LD60
         Rigidbody2D body;
         Collider2D bodyCollider;
         Collider2D targetCollider;
-        Rigidbody2D targetBody;
         SpriteRenderer spriteRenderer;
         Animator animator;
         State state;
@@ -53,7 +52,6 @@ namespace LD60
             if (target != null)
             {
                 targetCollider = target.GetComponent<Collider2D>();
-                targetBody = target.GetComponent<Rigidbody2D>();
             }
             initialPosition = transform.position;
             initialFlipX = spriteRenderer != null && spriteRenderer.flipX;
@@ -229,18 +227,6 @@ namespace LD60
             body.linearVelocity = velocity;
 
             UpdateVisuals(direction);
-        }
-
-        void OnCollisionEnter2D(Collision2D collision) => TryKill(collision);
-
-        void OnCollisionStay2D(Collision2D collision) => TryKill(collision);
-
-        void TryKill(Collision2D collision)
-        {
-            if (target != null && collision.rigidbody == targetBody)
-            {
-                target.Kill();
-            }
         }
 
         bool CanSeeTarget()
