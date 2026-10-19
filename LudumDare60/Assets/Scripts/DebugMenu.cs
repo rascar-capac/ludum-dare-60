@@ -6,14 +6,19 @@ namespace LD60
     public class DebugMenu : MonoBehaviour
     {
         [SerializeField] PlayerWeapon playerWeapon;
+        [SerializeField] CameraScroller cameraScroller;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         void OnGUI()
         {
-            GUILayout.BeginArea(new Rect(10f, 10f, 160f, 100f));
+            GUILayout.BeginArea(new Rect(10f, 10f, 160f, 130f));
             if (GUILayout.Button("Kill all enemies"))
             {
                 EnemyController.KillAll();
+            }
+            if (cameraScroller != null && GUILayout.Button(cameraScroller.DebugPaused ? "Resume scroll" : "Pause scroll"))
+            {
+                cameraScroller.DebugPaused = !cameraScroller.DebugPaused;
             }
             if (playerWeapon != null)
             {

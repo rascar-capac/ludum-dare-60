@@ -35,6 +35,8 @@ namespace LD60
             get => scrolling;
             set => scrolling = value;
         }
+        /// <summary>Debug pause, independent from Scrolling so that the respawn sequence does not resume it.</summary>
+        public bool DebugPaused { get; set; }
 
         void Awake()
         {
@@ -44,7 +46,7 @@ namespace LD60
 
         void Update()
         {
-            CurrentSpeed = scrolling && settings != null ? ScrollSpeedZone.GetSpeedAt(transform.position.x, settings.DefaultSpeed) : 0f;
+            CurrentSpeed = scrolling && !DebugPaused && settings != null ? ScrollSpeedZone.GetSpeedAt(transform.position.x, settings.DefaultSpeed) : 0f;
             transform.position += Vector3.right * (CurrentSpeed * Time.deltaTime);
         }
 
