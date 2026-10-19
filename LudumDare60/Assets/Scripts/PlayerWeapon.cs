@@ -10,7 +10,7 @@ namespace LD60
 
     /// <summary>
     /// Stock of spears carried by the avatar, up to MaxSpears. The held spear is shown while the stock is not empty
-    /// and HeldItemHidden is false.
+    /// and HeldItemHidden is false. SpearsUnlocked becomes true with the first spear and stays true, even once the stock is emptied.
     /// </summary>
     public class PlayerWeapon : MonoBehaviour
     {
@@ -24,12 +24,16 @@ namespace LD60
 
         public int MaxSpears => maxSpears;
 
+        /// <summary>True once the stock has held at least one spear.</summary>
+        public bool SpearsUnlocked { get; private set; }
+
         public int SpearCount
         {
             get => spearCount;
             set
             {
                 spearCount = Mathf.Clamp(value, 0, maxSpears);
+                SpearsUnlocked |= spearCount > 0;
                 UpdateHeldItems();
             }
         }

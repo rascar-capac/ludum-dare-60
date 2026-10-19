@@ -10,10 +10,15 @@
     flex-direction: row-reverse;
 }
 
+/* Hidden until the first spear is picked up. */
+.spear-slots--locked {
+    display: none;
+}
+
 /* Spear sprites are horizontal: each icon is rotated to stand upright in its slot. */
 .spear-slot {
-    width: 17px;
-    height: 115px;
+    width: 18px;
+    height: 112px;
     margin-left: 4px;
     align-items: center;
     justify-content: center;
@@ -21,14 +26,12 @@
 
 .spear-slot__icon {
     position: absolute;
-    width: 115px;
-    height: 17px;
+    width: 112px;
+    height: 18px;
     rotate: -90deg;
     background-image: url("project://database/Assets/Art/Sprites/spear_slot.png");
 }
 
 .spear-slot--full .spear-slot__icon {
-    width: 105px;
-    height: 9px;
     background-image: url("project://database/Assets/Art/Sprites/spear.png?fileID=1337014109&guid=92e5b09db719c1b47a0af71ce8a1bbfb&type=3#spear_0");
 }
