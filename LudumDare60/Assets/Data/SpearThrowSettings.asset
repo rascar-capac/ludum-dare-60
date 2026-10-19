@@ -19,5 +19,5 @@ MonoBehaviour:
   launchAngle: 15
   minAimAngle: -30
   maxAimAngle: 75
-  gravity: 0
+  gravity: 20
   minKillSpeed: 4
