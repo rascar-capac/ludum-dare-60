@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 937fe64688d700a4dbe8b77b8559aff3, type: 3}
   m_Name: ScrollSettings
   m_EditorClassIdentifier: LD60.Runtime::LD60.ScrollSettings
-  defaultSpeed: 2
+  defaultSpeed: 3
   edgeMargin: 0.5

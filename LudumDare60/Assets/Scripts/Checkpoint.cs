@@ -128,7 +128,6 @@ namespace LD60
 #if UNITY_EDITOR
             string label = debug ? "Debug Checkpoint" : "Checkpoint";
             UnityEditor.Handles.Label(position + new Vector3(0.3f, 9f, 0f), startPoint ? label + " (start)" : label);
-            UnityEditor.Handles.Label(spawn + new Vector3(0.3f, 1f, 0f), "Spawn");
 #endif
         }
     }

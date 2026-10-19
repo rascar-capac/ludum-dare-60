@@ -17,5 +17,7 @@ MonoBehaviour:
   minSpeed: 6
   maxSpeed: 16
   launchAngle: 15
-  gravity: 20
+  minAimAngle: -30
+  maxAimAngle: 75
+  gravity: 0
   minKillSpeed: 4
