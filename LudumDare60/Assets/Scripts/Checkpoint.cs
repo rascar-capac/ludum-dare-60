@@ -19,7 +19,7 @@ namespace LD60
         [SerializeField] CheckpointSettings settings;
 
         Animator animator;
-        PaintingSpriteSync painting;
+        PaintingFlash painting;
 
         public float ActivationX => transform.position.x;
         public Vector3 SpawnPosition => spawnPoint != null ? spawnPoint.position : transform.position;
@@ -27,7 +27,7 @@ namespace LD60
         void Awake()
         {
             animator = GetComponent<Animator>();
-            painting = GetComponent<PaintingSpriteSync>();
+            painting = GetComponent<PaintingFlash>();
         }
 
         void OnEnable() => checkpoints.Add(this);

@@ -2,7 +2,9 @@
     "name": "LD60.Runtime",
     "rootNamespace": "LD60",
     "references": [
-        "Unity.InputSystem"
+        "Unity.InputSystem",
+        "Unity.RenderPipelines.Core.Runtime",
+        "Unity.RenderPipelines.Universal.Runtime"
     ],
     "autoReferenced": true
 }
