@@ -21,6 +21,14 @@ namespace LD60
         [SerializeField, Min(0f)] float coyoteTime = 0.1f;
         [SerializeField, Min(0f)] float jumpBufferTime = 0.12f;
 
+        [Header("Jump apex and fall")]
+        [Tooltip("Below this absolute vertical speed while airborne, the player is considered at the jump apex.")]
+        [SerializeField, Min(0f)] float apexSpeedThreshold = 2f;
+        [Tooltip("Gravity multiplier at the jump apex. Below 1 the player hangs a bit in the air.")]
+        [SerializeField, Min(0f)] float apexGravityMultiplier = 0.4f;
+        [Tooltip("Gravity multiplier while falling past the apex.")]
+        [SerializeField, Min(1f)] float fallGravityMultiplier = 1.8f;
+
         [Header("Ground check")]
         [SerializeField, Min(0f)] float groundCheckDistance = 0.08f;
 
@@ -33,6 +41,9 @@ namespace LD60
         public float JumpCutMultiplier => jumpCutMultiplier;
         public float CoyoteTime => coyoteTime;
         public float JumpBufferTime => jumpBufferTime;
+        public float ApexSpeedThreshold => apexSpeedThreshold;
+        public float ApexGravityMultiplier => apexGravityMultiplier;
+        public float FallGravityMultiplier => fallGravityMultiplier;
         public float GroundCheckDistance => groundCheckDistance;
 
         /// <summary>Initial vertical speed needed to reach jumpHeight under gravity.</summary>

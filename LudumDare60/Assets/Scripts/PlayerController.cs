@@ -81,7 +81,6 @@ namespace LD60
                 return;
             }
 
-            body.gravityScale = settings.GravityScale;
             IsGrounded = CheckGrounded();
             if (IsGrounded)
             {
@@ -89,6 +88,7 @@ namespace LD60
             }
 
             Vector2 velocity = body.linearVelocity;
+            body.gravityScale = settings.GravityScale * GravityMultiplier(velocity.y);
             float input = ReadRunInput();
 
             float targetSpeed = input * settings.MaxSpeed;
@@ -134,6 +134,19 @@ namespace LD60
             {
                 spriteRenderer.flipX = input < 0f;
             }
+        }
+
+        float GravityMultiplier(float verticalSpeed)
+        {
+            if (IsGrounded)
+            {
+                return 1f;
+            }
+            if (Mathf.Abs(verticalSpeed) < settings.ApexSpeedThreshold)
+            {
+                return settings.ApexGravityMultiplier;
+            }
+            return verticalSpeed < 0f ? settings.FallGravityMultiplier : 1f;
         }
 
         float ReadRunInput() => moveAction != null && !RunLocked ? moveAction.action.ReadValue<Vector2>().x : 0f;

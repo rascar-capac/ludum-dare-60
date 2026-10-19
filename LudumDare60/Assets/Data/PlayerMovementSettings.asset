@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ef7fdff6d8311141b9624b09290333f, type: 3}
   m_Name: PlayerMovementSettings
   m_EditorClassIdentifier: LD60.Runtime::LD60.PlayerMovementSettings
-  maxSpeed: 6
-  acceleration: 60
+  maxSpeed: 5
+  acceleration: 50
   deceleration: 50
-  airControl: 0.6
-  jumpHeight: 3
-  gravity: 29.43
+  airControl: 0.5
+  jumpHeight: 1.7
+  gravity: 20
   jumpCutMultiplier: 0.5
   coyoteTime: 0.1
   jumpBufferTime: 0.12
+  apexSpeedThreshold: 0.6
+  apexGravityMultiplier: 1
+  fallGravityMultiplier: 2
   groundCheckDistance: 0.08
