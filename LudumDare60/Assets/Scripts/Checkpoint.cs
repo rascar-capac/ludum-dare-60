@@ -6,7 +6,9 @@ namespace LD60
 {
     /// <summary>
     /// Respawn point placed in the level. It is reached as soon as the player goes past the x of transform.position,
-    /// and the player then respawns at spawnPoint (see PlayerDeath). The first one is the start of the level.
+    /// and the player then respawns at spawnPoint (see PlayerDeath).
+    /// The level starts at the most advanced checkpoint marked as start point, or at the first one if none is.
+    /// A debug checkpoint is disabled in builds, which makes it easy to test a section without shipping its start point.
     /// Activation plays the "Checked" trigger of the optional Animator and flashes the painting to white.
     /// </summary>
     public class Checkpoint : MonoBehaviour
@@ -17,6 +19,10 @@ namespace LD60
         [Tooltip("Where the player respawns. Falls back to this transform when empty.")]
         [SerializeField] Transform spawnPoint;
         [SerializeField] CheckpointSettings settings;
+        [Tooltip("The level starts at the most advanced start point.")]
+        [SerializeField] bool startPoint;
+        [Tooltip("Disabled in builds.")]
+        [SerializeField] bool debug;
 
         Animator animator;
         PaintingFlash painting;
@@ -26,6 +32,13 @@ namespace LD60
 
         void Awake()
         {
+#if !UNITY_EDITOR
+            if (debug)
+            {
+                gameObject.SetActive(false);
+                return;
+            }
+#endif
             animator = GetComponent<Animator>();
             painting = GetComponent<PaintingFlash>();
         }
@@ -90,16 +103,31 @@ namespace LD60
             return first;
         }
 
+        /// <summary>Returns the most advanced checkpoint marked as start point, or the first one if none is, or null if there is none.</summary>
+        public static Checkpoint GetStart()
+        {
+            Checkpoint start = null;
+            foreach (Checkpoint checkpoint in checkpoints)
+            {
+                if (checkpoint.startPoint && (start == null || checkpoint.ActivationX > start.ActivationX))
+                {
+                    start = checkpoint;
+                }
+            }
+            return start != null ? start : GetFirst();
+        }
+
         void OnDrawGizmos()
         {
             Vector3 position = transform.position;
             Vector3 spawn = SpawnPosition;
-            Gizmos.color = new Color(0.3f, 1f, 0.4f, 0.8f);
+            Gizmos.color = debug ? new Color(1f, 0.6f, 0.1f, 0.8f) : new Color(0.3f, 1f, 0.4f, 0.8f);
             Gizmos.DrawLine(position + Vector3.down * 25f, position + Vector3.up * 25f);
             Gizmos.DrawLine(position, spawn);
             Gizmos.DrawWireSphere(spawn, 0.4f);
 #if UNITY_EDITOR
-            UnityEditor.Handles.Label(position + new Vector3(0.3f, 9f, 0f), "Checkpoint");
+            string label = debug ? "Debug Checkpoint" : "Checkpoint";
+            UnityEditor.Handles.Label(position + new Vector3(0.3f, 9f, 0f), startPoint ? label + " (start)" : label);
             UnityEditor.Handles.Label(spawn + new Vector3(0.3f, 1f, 0f), "Spawn");
 #endif
         }

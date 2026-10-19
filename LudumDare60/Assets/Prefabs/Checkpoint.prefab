@@ -162,6 +162,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: LD60.Runtime::LD60.Checkpoint
   spawnPoint: {fileID: 3303730424499816030}
   settings: {fileID: 11400000, guid: 3de532678b5dbb34c9d9e5f881c636f8, type: 2}
+  startPoint: 0
+  debug: 0
 --- !u!114 &3222257297411657054
 MonoBehaviour:
   m_ObjectHideFlags: 0

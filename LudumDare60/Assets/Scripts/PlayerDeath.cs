@@ -6,7 +6,7 @@ namespace LD60
     /// <summary>
     /// Kills the player when the left edge of the camera catches them or when they fall below the screen,
     /// then moves the camera back and respawns the player at the last reached Checkpoint with a fade in.
-    /// The level starts with the same spawn sequence at the first Checkpoint, the camera being placed instantly.
+    /// The level starts with the same spawn sequence at the start Checkpoint (see Checkpoint.GetStart), the camera being placed instantly.
     /// Every enemy is reset to its initial position at the start of the spawn sequence, killed ones included.
     /// The player also loses their spears, every collected Pickup comes back and every ThrownSpear is removed.
     /// Without any Checkpoint, the player spawns at their position in the scene.
@@ -48,10 +48,10 @@ namespace LD60
         void Start()
         {
             // Checkpoints register in OnEnable, so they are all known by now.
-            Checkpoint first = Checkpoint.GetFirst();
-            if (first != null)
+            Checkpoint start = Checkpoint.GetStart();
+            if (start != null)
             {
-                SetCheckpoint(first);
+                SetCheckpoint(start);
             }
             if (settings != null)
             {
