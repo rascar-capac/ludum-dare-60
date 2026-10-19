@@ -5,6 +5,7 @@ namespace LD60
     /// <summary>
     /// Plays the sound effects of the game as one-shots on a 2D AudioSource, so that the sound of an object
     /// that is deactivated or destroyed right away is not cut. Play does nothing when there is no SfxPlayer in the scene.
+    /// The volume follows AudioPreferences.SoundVolume.
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class SfxPlayer : MonoBehaviour
@@ -34,7 +35,7 @@ namespace LD60
         {
             if (instance != null && clip != null)
             {
-                instance.source.PlayOneShot(clip);
+                instance.source.PlayOneShot(clip, AudioPreferences.SoundVolume);
             }
         }
     }

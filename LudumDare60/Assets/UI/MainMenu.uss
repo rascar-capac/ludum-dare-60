@@ -1,0 +1,85 @@
+/* Painted on the wall (see MainMenu): the panel renders into a texture, so sizes are in texels of MainMenu.renderTexture. */
+.menu {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: center;
+    --paint-color: rgb(40, 14, 10);
+    --selected-color: rgb(246, 232, 205);
+}
+
+/* Once the game has begun, the disabled menu keeps its look on the wall. */
+.menu .unity-disabled {
+    opacity: 1;
+}
+
+.menu-page {
+    align-items: center;
+}
+
+.menu-page--hidden {
+    display: none;
+}
+
+.menu-button {
+    margin: 8px 0;
+    padding: 0 24px;
+    border-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+    color: var(--paint-color);
+    font-size: 96px;
+    -unity-font-style: bold;
+    transition: color 0.1s, scale 0.1s;
+}
+
+.menu-button:hover,
+.menu-button:active {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.menu-button:focus {
+    color: var(--selected-color);
+    scale: 1.1 1.1;
+}
+
+.menu-slider {
+    width: 760px;
+    margin: 16px 0;
+}
+
+.menu-slider .unity-label {
+    min-width: 280px;
+    color: var(--paint-color);
+    font-size: 80px;
+    -unity-font-style: bold;
+    transition: color 0.1s;
+}
+
+.menu-slider .unity-base-slider__tracker {
+    height: 10px;
+    margin-top: -5px;
+    border-width: 0;
+    border-radius: 5px;
+    background-color: var(--paint-color);
+}
+
+.menu-slider .unity-base-slider__dragger {
+    width: 40px;
+    height: 40px;
+    margin-top: -20px;
+    border-width: 0;
+    border-radius: 20px;
+    background-color: var(--paint-color);
+}
+
+.menu-slider .unity-base-slider__dragger-border {
+    display: none;
+}
+
+.menu-slider:focus .unity-label {
+    color: var(--selected-color);
+}
+
+.menu-slider:focus .unity-base-slider__tracker,
+.menu-slider:focus .unity-base-slider__dragger {
+    background-color: var(--selected-color);
+}

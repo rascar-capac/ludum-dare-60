@@ -5,6 +5,7 @@ namespace LD60
     /// <summary>
     /// Plays the clip of the AudioSource in a loop from the start of the game, after a delay, fading in from silence.
     /// The delay and fade use unscaled time, clamped like the scaled one, so they are not affected by Time.timeScale.
+    /// The volume is scaled by AudioPreferences.MusicVolume.
     /// </summary>
     [RequireComponent(typeof(AudioSource))]
     public class MusicPlayer : MonoBehaviour
@@ -49,7 +50,7 @@ namespace LD60
             }
             float fade = settings.FadeInDuration > 0f ? Mathf.Clamp01(fadeTime / settings.FadeInDuration) : 1f;
             // Squared so the perceived loudness rises evenly instead of jumping at the start.
-            source.volume = fade * fade * settings.Volume;
+            source.volume = fade * fade * settings.Volume * AudioPreferences.MusicVolume;
         }
     }
 }

@@ -7,6 +7,7 @@ namespace LD60
     /// Kills the player when the left edge of the camera catches them or when they fall below the screen,
     /// then moves the camera back and respawns the player at the last reached Checkpoint with a fade in.
     /// The level starts with the same spawn sequence at the start Checkpoint (see Checkpoint.GetStart), the camera being placed instantly.
+    /// With WaitForBegin, the player stays hidden until Begin is called, and the camera then moves to the start Checkpoint.
     /// Every enemy is reset to its initial position at the start of the spawn sequence, killed ones included.
     /// The player also loses their spears, every collected Pickup comes back and every ThrownSpear is removed.
     /// Without any Checkpoint, the player spawns at their position in the scene.
@@ -35,6 +36,9 @@ namespace LD60
         public bool IsDead { get; private set; }
         public bool HasEnded { get; private set; }
 
+        /// <summary>Set before Start, by the MainMenu, to keep the player hidden until Begin is called instead of spawning right away.</summary>
+        public bool WaitForBegin { get; set; }
+
         void Awake()
         {
             body = GetComponent<Rigidbody2D>();
@@ -55,10 +59,33 @@ namespace LD60
             {
                 SetCheckpoint(start);
             }
-            if (settings != null)
+            if (settings == null)
+            {
+                return;
+            }
+            if (WaitForBegin)
+            {
+                Hide();
+                if (scroller != null)
+                {
+                    scroller.Scrolling = false;
+                }
+            }
+            else
             {
                 StartCoroutine(SpawnSequence(0f));
             }
+        }
+
+        /// <summary>Ends WaitForBegin: moves the camera from where it is to the start Checkpoint, then spawns the player.</summary>
+        public void Begin()
+        {
+            if (!WaitForBegin || settings == null)
+            {
+                return;
+            }
+            WaitForBegin = false;
+            StartCoroutine(SpawnSequence(settings.BeginCameraDuration));
         }
 
         void FixedUpdate()
@@ -141,11 +168,7 @@ namespace LD60
         /// </summary>
         IEnumerator SpawnSequence(float cameraDuration)
         {
-            IsDead = true;
-            SetControlsEnabled(false);
-            body.linearVelocity = Vector2.zero;
-            body.simulated = false;
-            spriteRenderer.enabled = false;
+            Hide();
             EnemyController.ResetAll();
             Pickup.ResetAll();
             ThrownSpear.ClearAll();
@@ -187,6 +210,16 @@ namespace LD60
                 scroller.Scrolling = true;
             }
             IsDead = false;
+        }
+
+        /// <summary>Removes the player from the game, as during the spawn sequence: hidden, without physics nor controls, and unable to die.</summary>
+        void Hide()
+        {
+            IsDead = true;
+            SetControlsEnabled(false);
+            body.linearVelocity = Vector2.zero;
+            body.simulated = false;
+            spriteRenderer.enabled = false;
         }
 
         void SetCheckpoint(Checkpoint checkpoint)

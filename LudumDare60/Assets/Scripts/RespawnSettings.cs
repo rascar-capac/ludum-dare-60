@@ -14,6 +14,9 @@ namespace LD60
         [Tooltip("Duration of the camera move back to its start position.")]
         [SerializeField, Min(0f)] float cameraReturnDuration = 1.2f;
 
+        [Tooltip("Duration of the camera move from the main menu to the start point.")]
+        [SerializeField, Min(0f)] float beginCameraDuration = 3f;
+
         [Tooltip("Duration of the alpha fade in of the respawned player.")]
         [SerializeField, Min(0f)] float fadeInDuration = 0.6f;
 
@@ -22,6 +25,7 @@ namespace LD60
 
         public float DeathDelay => deathDelay;
         public float CameraReturnDuration => cameraReturnDuration;
+        public float BeginCameraDuration => beginCameraDuration;
         public float FadeInDuration => fadeInDuration;
         public float SpawnScreenX => spawnScreenX;
     }
