@@ -22,8 +22,8 @@ namespace LD60
                 return;
             }
 
-            float maxX = scroller.RightEdgeX - scroller.Settings.EdgeMargin;
             Vector2 position = body.position;
+            float maxX = scroller.RightEdgeXAt(position.y) - scroller.Settings.EdgeMargin;
             if (position.x <= maxX)
             {
                 return;

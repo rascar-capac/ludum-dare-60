@@ -29,7 +29,7 @@ namespace LD60
         [Tooltip("Speed of the position wobble.")]
         [SerializeField, Min(0f)] float positionJitterFrequency = 1.2f;
 
-        [Tooltip("Smoothing time of the torch following the avatar offset from the screen center. 0 follows instantly.")]
+        [Tooltip("Smoothing time of the torch following the avatar. 0 follows instantly.")]
         [SerializeField, Min(0f)] float avatarFollowDamping = 0.5f;
 
         public float SwayFrequency => swayFrequency;

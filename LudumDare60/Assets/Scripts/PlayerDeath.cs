@@ -74,7 +74,9 @@ namespace LD60
             }
 
             Bounds bounds = bodyCollider.bounds;
-            if (bounds.min.x <= scroller.LeftEdgeX || bounds.max.y < scroller.BottomEdgeY)
+            bool caughtByLeftEdge = bounds.min.x <= Mathf.Max(scroller.LeftEdgeXAt(bounds.min.y), scroller.LeftEdgeXAt(bounds.max.y));
+            bool belowBottomEdge = bounds.max.y < Mathf.Min(scroller.BottomEdgeYAt(bounds.min.x), scroller.BottomEdgeYAt(bounds.max.x));
+            if (caughtByLeftEdge || belowBottomEdge)
             {
                 Kill();
             }
@@ -104,7 +106,7 @@ namespace LD60
                 Vector3 center = bounds.center;
                 if (scroller != null)
                 {
-                    center.y = Mathf.Max(center.y, scroller.BottomEdgeY + bounds.extents.y);
+                    center.y = Mathf.Max(center.y, scroller.BottomEdgeYAt(center.x) + bounds.extents.y);
                 }
                 center.z = deathBurstPrefab.transform.position.z;
                 Instantiate(deathBurstPrefab, center, deathBurstPrefab.transform.rotation);
@@ -140,7 +142,7 @@ namespace LD60
             if (scroller != null)
             {
                 scroller.Scrolling = false;
-                float cameraX = spawnPosition.x + scroller.HalfWidthAt(0f) * (1f - 2f * settings.SpawnScreenX);
+                float cameraX = scroller.CameraXFor(spawnPosition.x, settings.SpawnScreenX);
                 if (cameraDuration > 0f)
                 {
                     yield return scroller.ReturnTo(cameraX, cameraDuration);

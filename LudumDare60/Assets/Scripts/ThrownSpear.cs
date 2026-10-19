@@ -80,7 +80,8 @@ namespace LD60
                 return false;
             }
             Bounds bounds = spriteRenderer.bounds;
-            return bounds.max.x < scroller.LeftEdgeX || bounds.min.x > scroller.RightEdgeX || bounds.max.y < scroller.BottomEdgeY;
+            float y = bounds.center.y;
+            return bounds.max.x < scroller.LeftEdgeXAt(y) || bounds.min.x > scroller.RightEdgeXAt(y) || bounds.max.y < scroller.BottomEdgeYAt(bounds.center.x);
         }
 
         void OnCollisionEnter2D(Collision2D collision) => flying = false;

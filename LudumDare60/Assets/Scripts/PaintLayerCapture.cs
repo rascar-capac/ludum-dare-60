@@ -42,17 +42,29 @@ namespace LD60
                 return;
             }
 
-            Vector3 viewPosition = viewCamera.transform.position;
-            float distance = wall.position.z + maxWallDepth - viewPosition.z;
-            float halfHeight = distance * Mathf.Tan(viewCamera.fieldOfView * 0.5f * Mathf.Deg2Rad);
+            // Bounds of the frustum intersections with the wall plane and with the deepest wall plane.
+            Vector2 visibleMin = new(float.MaxValue, float.MaxValue);
+            Vector2 visibleMax = new(float.MinValue, float.MinValue);
+            foreach (float z in new[] { wall.position.z, wall.position.z + maxWallDepth })
+            {
+                for (int corner = 0; corner < 4; corner++)
+                {
+                    Vector2 point = CameraScroller.ViewportToPlane(viewCamera, corner & 1, corner >> 1, z);
+                    visibleMin = Vector2.Min(visibleMin, point);
+                    visibleMax = Vector2.Max(visibleMax, point);
+                }
+            }
+
+            Vector2 visibleCenter = (visibleMin + visibleMax) * 0.5f;
+            Vector2 visibleHalfSize = (visibleMax - visibleMin) * 0.5f;
             float textureAspect = (float)target.width / target.height;
-            float orthographicSize = Mathf.Max(halfHeight, halfHeight * viewCamera.aspect / textureAspect);
+            float orthographicSize = Mathf.Max(visibleHalfSize.y, visibleHalfSize.x / textureAspect);
             float texelSize = 2f * orthographicSize / target.height;
 
             Vector2 center = new(
-                Mathf.Round(viewPosition.x / texelSize) * texelSize,
-                Mathf.Round(viewPosition.y / texelSize) * texelSize);
-            transform.SetPositionAndRotation(new Vector3(center.x, center.y, viewPosition.z), Quaternion.identity);
+                Mathf.Round(visibleCenter.x / texelSize) * texelSize,
+                Mathf.Round(visibleCenter.y / texelSize) * texelSize);
+            transform.SetPositionAndRotation(new Vector3(center.x, center.y, viewCamera.transform.position.z), Quaternion.identity);
             captureCamera.orthographic = true;
             captureCamera.orthographicSize = orthographicSize;
 

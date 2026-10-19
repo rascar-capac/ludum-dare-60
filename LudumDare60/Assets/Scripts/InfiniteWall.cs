@@ -39,7 +39,7 @@ namespace LD60
             }
         }
 
-        /// <summary>Draws the top and bottom intersections of the camera frustum with the wall.</summary>
+        /// <summary>Draws the lowest and highest heights of the wall the scrolling camera can show.</summary>
         void OnDrawGizmos()
         {
             if (cameraTransform == null || levelBackground == null || !cameraTransform.TryGetComponent(out Camera cam))
@@ -47,14 +47,21 @@ namespace LD60
                 return;
             }
 
-            Vector3 cameraPosition = cameraTransform.position;
-            float distance = Mathf.Abs(transform.position.z - cameraPosition.z);
-            float halfHeight = distance * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
             Bounds bounds = levelBackground.bounds;
             float z = transform.position.z;
 
+            // The camera only scrolls along x, so the visible band spans the extreme heights of its frustum corners on the wall.
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+            for (int corner = 0; corner < 4; corner++)
+            {
+                float y = CameraScroller.ViewportToPlane(cam, corner & 1, corner >> 1, z).y;
+                minY = Mathf.Min(minY, y);
+                maxY = Mathf.Max(maxY, y);
+            }
+
             Gizmos.color = Color.cyan;
-            foreach (float y in new[] { cameraPosition.y + halfHeight, cameraPosition.y - halfHeight })
+            foreach (float y in new[] { minY, maxY })
             {
                 Gizmos.DrawLine(new Vector3(bounds.min.x, y, z), new Vector3(bounds.max.x, y, z));
             }

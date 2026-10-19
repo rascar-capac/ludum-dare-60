@@ -4,8 +4,8 @@ namespace LD60
 {
     /// <summary>
     /// Makes a light flicker like a torch flame: slow sway plus fast crackle on intensity and range,
-    /// and a small wobble of its local position. Each torch gets its own noise offset so they never sync.
-    /// The torch also follows, with damping, the offset of the avatar from the screen center (the parent camera axis).
+    /// and a small wobble of its position. Each torch gets its own noise offset so they never sync.
+    /// The torch follows the avatar with damping, keeping its offset from the avatar in the scene.
     /// </summary>
     [RequireComponent(typeof(Light))]
     public class TorchFlicker : MonoBehaviour
@@ -16,17 +16,19 @@ namespace LD60
         Light torchLight;
         float baseIntensity;
         float baseRange;
-        Vector3 baseLocalPosition;
         float seed;
         Vector3 avatarOffset;
-        Vector3 avatarOffsetVelocity;
+        Vector3 followPosition;
+        Vector3 followVelocity;
 
         void Awake()
         {
             torchLight = GetComponent<Light>();
             baseIntensity = torchLight.intensity;
             baseRange = torchLight.range;
-            baseLocalPosition = transform.localPosition;
+            // Read before PlayerDeath moves the avatar to its spawn point in Start.
+            avatarOffset = avatar != null ? transform.position - avatar.position : Vector3.zero;
+            followPosition = transform.position;
             seed = Random.Range(0f, 1000f);
         }
 
@@ -39,10 +41,9 @@ namespace LD60
 
             torchLight.intensity = baseIntensity;
             torchLight.range = baseRange;
-            transform.localPosition = baseLocalPosition;
         }
 
-        void Start() => avatarOffset = AvatarOffset();
+        void Start() => followPosition = TargetPosition();
 
         void LateUpdate()
         {
@@ -62,23 +63,12 @@ namespace LD60
             float jitterTime = time * settings.PositionJitterFrequency;
             Vector3 jitter = new Vector3(Noise(jitterTime, 20f), Noise(jitterTime, 30f), 0f) * settings.PositionJitter;
 
-            avatarOffset = Vector3.SmoothDamp(avatarOffset, AvatarOffset(), ref avatarOffsetVelocity, settings.AvatarFollowDamping);
+            followPosition = Vector3.SmoothDamp(followPosition, TargetPosition(), ref followVelocity, settings.AvatarFollowDamping);
 
-            transform.localPosition = baseLocalPosition + jitter + avatarOffset;
+            transform.position = followPosition + jitter;
         }
 
-        // Avatar position relative to the screen center, in the parent camera space.
-        Vector3 AvatarOffset()
-        {
-            if (avatar == null || transform.parent == null)
-            {
-                return Vector3.zero;
-            }
-
-            Vector3 offset = transform.parent.InverseTransformPoint(avatar.position);
-            offset.z = 0f;
-            return offset;
-        }
+        Vector3 TargetPosition() => avatar != null ? avatar.position + avatarOffset : followPosition;
 
         // Perlin noise remapped to [-1, 1].
         float Noise(float x, float channel) => Mathf.PerlinNoise(seed + x, seed + channel) * 2f - 1f;
