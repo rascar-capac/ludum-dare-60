@@ -11,6 +11,7 @@ namespace LD60
     /// The player also loses their spears, every collected Pickup comes back and every ThrownSpear is removed.
     /// Without any Checkpoint, the player spawns at their position in the scene.
     /// Controls are disabled for the whole sequence.
+    /// Reaching an end point Checkpoint ends the game: controls are disabled, the camera stops and the player can't die anymore.
     /// </summary>
     [DefaultExecutionOrder(-10)] // Places the player and the camera before the other Start, which read their positions.
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
@@ -32,6 +33,7 @@ namespace LD60
         Checkpoint currentCheckpoint;
 
         public bool IsDead { get; private set; }
+        public bool HasEnded { get; private set; }
 
         void Awake()
         {
@@ -61,7 +63,7 @@ namespace LD60
 
         void FixedUpdate()
         {
-            if (IsDead || scroller == null)
+            if (IsDead || HasEnded || scroller == null)
             {
                 return;
             }
@@ -71,6 +73,11 @@ namespace LD60
             {
                 SetCheckpoint(checkpoint);
                 checkpoint.Activate();
+                if (checkpoint.IsEndPoint)
+                {
+                    EndGame();
+                    return;
+                }
             }
 
             Bounds bounds = bodyCollider.bounds;
@@ -84,11 +91,19 @@ namespace LD60
 
         public void Kill()
         {
-            if (IsDead || settings == null)
+            if (IsDead || HasEnded || settings == null)
             {
                 return;
             }
             StartCoroutine(DeathSequence());
+        }
+
+        void EndGame()
+        {
+            HasEnded = true;
+            SetControlsEnabled(false);
+            body.linearVelocity = new Vector2(0f, body.linearVelocity.y);
+            scroller.Scrolling = false;
         }
 
         IEnumerator DeathSequence()

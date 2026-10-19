@@ -10,6 +10,7 @@ namespace LD60
     /// The level starts at the most advanced checkpoint marked as start point, or at the first one if none is.
     /// A debug checkpoint is disabled in builds, which makes it easy to test a section without shipping its start point.
     /// Activation plays the "Checked" trigger of the optional Animator and flashes the painting to white.
+    /// Reaching an end point ends the game (see PlayerDeath).
     /// </summary>
     public class Checkpoint : MonoBehaviour
     {
@@ -23,11 +24,14 @@ namespace LD60
         [SerializeField] bool startPoint;
         [Tooltip("Disabled in builds.")]
         [SerializeField] bool debug;
+        [Tooltip("Reaching it ends the game: the player can't move anymore and the camera stops.")]
+        [SerializeField] bool endPoint;
 
         Animator animator;
         PaintingFlash painting;
 
         public float ActivationX => transform.position.x;
+        public bool IsEndPoint => endPoint;
         public Vector3 SpawnPosition => spawnPoint != null ? spawnPoint.position : transform.position;
 
         void Awake()
@@ -126,7 +130,7 @@ namespace LD60
             Gizmos.DrawLine(position, spawn);
             Gizmos.DrawWireSphere(spawn, 0.4f);
 #if UNITY_EDITOR
-            string label = debug ? "Debug Checkpoint" : "Checkpoint";
+            string label = endPoint ? "End Point" : debug ? "Debug Checkpoint" : "Checkpoint";
             UnityEditor.Handles.Label(position + new Vector3(0.3f, 9f, 0f), startPoint ? label + " (start)" : label);
 #endif
         }

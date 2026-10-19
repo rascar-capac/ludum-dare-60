@@ -86,6 +86,7 @@ Side scroller de peintures rupestres. Le joueur peut se déplacer librement mais
   - La caméra retourne en arrière jusqu’au checkpoint avec un mouvement fluide.
   - Les checkpoints sont des prefabs `Checkpoint` placés à la main : le plus avancé dont l’avatar a dépassé le X (racine, avec le cairn) devient actif, et l’avatar réapparaît sur son enfant `SpawnPoint`. Le niveau démarre au checkpoint `startPoint` le plus avancé (à défaut le premier) avec la même séquence de spawn (caméra placée instantanément), les positions de l’avatar et de la caméra dans la scène sont donc écrasées.
   - Un checkpoint `debug` est désactivé en build : combiné à `startPoint`, il sert à tester une section.
+  - Un checkpoint `endPoint` (prefab variant `End_Point`) termine la partie : `PlayerDeath.EndGame()` coupe les contrôles, arrête le scroll et l’avatar ne peut plus mourir (`HasEnded`).
   - Le côté droit et le haut de la caméra ne provoquent pas de mort, ils doivent juste bloquer le passage.
 
 ### Obstacles
