@@ -3,6 +3,8 @@ name: Build & publish to itch.io
 on:
   push:
     branches: [main]
+    # Version tags (v1.0, v1.1…) are archived on itch in their own channel
+    tags: ['v*']
   workflow_dispatch:
 
 concurrency:
@@ -70,6 +72,8 @@ jobs:
           retention-days: 7
 
       - name: Install butler
+        # Only the latest WebGL build is kept on itch, tags don't archive it
+        if: ${{ !(github.ref_type == 'tag' && matrix.channel == 'html5') }}
         run: |
           curl -fsSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
           unzip -q butler.zip -d "$HOME/butler"
@@ -77,9 +81,17 @@ jobs:
           echo "$HOME/butler" >> "$GITHUB_PATH"
 
       - name: Push to itch.io
+        if: ${{ !(github.ref_type == 'tag' && matrix.channel == 'html5') }}
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
-          butler push "${{ matrix.pushPath }}" "$ITCH_GAME:${{ matrix.channel }}" \
-            --userversion "${{ github.run_number }}-${GITHUB_SHA::7}" \
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
+            CHANNEL="${{ matrix.channel }}-$GITHUB_REF_NAME"
+            USERVERSION="$GITHUB_REF_NAME"
+          else
+            CHANNEL="${{ matrix.channel }}"
+            USERVERSION="${{ github.run_number }}-${GITHUB_SHA::7}"
+          fi
+          butler push "${{ matrix.pushPath }}" "$ITCH_GAME:$CHANNEL" \
+            --userversion "$USERVERSION" \
             --ignore '*_BurstDebugInformation_DoNotShip'
