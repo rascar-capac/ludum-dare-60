@@ -5,8 +5,9 @@ namespace LD60
 {
     /// <summary>
     /// Throws the held spear toward the facing direction (SpriteRenderer.flipX) when the Player/Attack action is released.
-    /// When the charge is not started from a gamepad or a joystick, the pointer orients the player while charging
-    /// and sets the launch angle, clamped between SpearThrowSettings.MinAimAngle and MaxAimAngle.
+    /// While charging, the player is oriented and the launch angle set by the pointer, or by the angle of the aim stick
+    /// when the charge is started from a gamepad or a joystick (the stick at rest keeps the facing and the default angle).
+    /// The launch angle is clamped between SpearThrowSettings.MinAimAngle and MaxAimAngle.
     /// The longer the input is held, the faster the spear is launched; a release before SpearThrowSettings.MinChargeTime cancels the throw.
     /// Each throw removes one spear from the player's stock.
     /// Running is locked from the press until the end of the throwing animation. The next spear of the stock is only
@@ -27,6 +28,12 @@ namespace LD60
         [Tooltip("Pointer position in screen space, such as UI/Point.")]
         [SerializeField] InputActionReference aimPointAction;
 
+        [Tooltip("Stick aiming the throw from a gamepad or a joystick, such as Player/Move (unused for running while charging).")]
+        [SerializeField] InputActionReference aimStickAction;
+
+        [Tooltip("Stick magnitude under which the stick is considered at rest.")]
+        [SerializeField, Range(0f, 1f)] float stickDeadzone = 0.3f;
+
         [SerializeField] SpearThrowSettings settings;
         [SerializeField] ThrownSpear spearPrefab;
         [SerializeField] AudioClip throwSound;
@@ -42,6 +49,7 @@ namespace LD60
         float chargeStartTime;
         bool charging;
         bool aimWithPointer;
+        bool aimWithStick;
         bool throwPending;
         bool throwing;
 
@@ -87,7 +95,9 @@ namespace LD60
                 charging = true;
                 chargeStartTime = Time.time;
                 InputDevice device = attackAction.action.activeControl?.device;
-                aimWithPointer = aimPointAction != null && !(device is Gamepad || device is Joystick);
+                bool stickDevice = device is Gamepad || device is Joystick;
+                aimWithPointer = aimPointAction != null && !stickDevice;
+                aimWithStick = aimStickAction != null && stickDevice;
             }
             else if (charging && attackAction.action.WasReleasedThisFrame())
             {
@@ -99,9 +109,9 @@ namespace LD60
                 }
             }
 
-            if (charging && aimWithPointer && TryGetPointerWorldPosition(out Vector2 target))
+            if (charging && TryGetAimOffset(transform.position, out Vector2 aim) && aim.x != 0f)
             {
-                spriteRenderer.flipX = target.x < transform.position.x;
+                spriteRenderer.flipX = aim.x < 0f;
             }
             UpdateAnimator(charging ? Time.time - chargeStartTime : 0f);
             UpdateThrowLocks();
@@ -170,14 +180,13 @@ namespace LD60
             return transform.position + new Vector3(flip ? -throwOrigin.x : throwOrigin.x, throwOrigin.y, 0f);
         }
 
-        /// <summary>Launch angle above the horizontal, in degrees, toward the pointer when aiming with it.</summary>
+        /// <summary>Launch angle above the horizontal, in degrees, toward the pointer or the stick when aiming with them.</summary>
         float GetLaunchAngle(Vector3 origin)
         {
-            if (!aimWithPointer || !TryGetPointerWorldPosition(out Vector2 target))
+            if (!TryGetAimOffset(origin, out Vector2 offset))
             {
                 return settings.LaunchAngle;
             }
-            Vector2 offset = target - (Vector2)origin;
             float angle = Mathf.Atan2(offset.y, Mathf.Abs(offset.x)) * Mathf.Rad2Deg;
             return Mathf.Clamp(angle, settings.MinAimAngle, settings.MaxAimAngle);
         }
@@ -186,6 +195,23 @@ namespace LD60
         {
             angle *= Mathf.Deg2Rad;
             return new Vector2((flip ? -1f : 1f) * Mathf.Cos(angle), Mathf.Sin(angle));
+        }
+
+        /// <summary>Aim direction from the given origin: toward the pointer, or the stick direction when it is not at rest.</summary>
+        bool TryGetAimOffset(Vector2 origin, out Vector2 offset)
+        {
+            if (aimWithPointer && TryGetPointerWorldPosition(out Vector2 target))
+            {
+                offset = target - origin;
+                return true;
+            }
+            if (aimWithStick)
+            {
+                offset = aimStickAction.action.ReadValue<Vector2>();
+                return offset.magnitude >= stickDeadzone;
+            }
+            offset = default;
+            return false;
         }
 
         bool TryGetPointerWorldPosition(out Vector2 position)

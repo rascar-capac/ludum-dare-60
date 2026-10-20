@@ -276,6 +276,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: LD60.Runtime::LD60.SpearThrower
   attackAction: {fileID: 1903506563957944628, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   aimPointAction: {fileID: 1054132383583890850, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  aimStickAction: {fileID: -1246895598473198080, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  stickDeadzone: 0.3
   settings: {fileID: 11400000, guid: 8ce594eb280206a438b214966100ebd6, type: 2}
   spearPrefab: {fileID: 6493971057993558607, guid: e635045ecb70bf24cb2f3eb1d4dbf174, type: 3}
   throwSound: {fileID: 8300000, guid: 741cf4cab424c7c4a9645a2a1dd6e86a, type: 3}
