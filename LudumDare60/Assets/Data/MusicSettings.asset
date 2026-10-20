@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: MusicSettings
   m_EditorClassIdentifier: LD60.Runtime::LD60.MusicSettings
   volume: 1
-  startDelay: 1
-  fadeInDuration: 5
+  startDelay: 2
+  fadeInDuration: 0
