@@ -16,8 +16,12 @@ namespace LD60
         [Tooltip("Duration of the fade in from silence when the music starts, in seconds.")]
         [SerializeField, Min(0f)] float fadeInDuration = 3f;
 
+        [Tooltip("Duration of the crossfade from the theme loop back to the menu loop at the end of the game, in seconds.")]
+        [SerializeField, Min(0f)] float menuCrossfadeDuration = 3f;
+
         public float Volume => volume;
         public float StartDelay => startDelay;
         public float FadeInDuration => fadeInDuration;
+        public float MenuCrossfadeDuration => menuCrossfadeDuration;
     }
 }

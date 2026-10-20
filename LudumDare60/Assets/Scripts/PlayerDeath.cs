@@ -15,7 +15,7 @@ namespace LD60
     /// Controls are disabled for the whole sequence.
     /// Reaching an end point Checkpoint ends the game: controls are disabled, the camera stops and the player can't die anymore.
     /// After RespawnSettings.EndDelay, the level is reset, the player is hidden and the camera moves back to the main menu,
-    /// where it was when Begin was called, then ReturnedToMenu is raised and the player waits for Begin again.
+    /// where it was when Begin was called, between ReturningToMenu and ReturnedToMenu, and the player waits for Begin again.
     /// Without a main menu, the player respawns at the start Checkpoint instead.
     /// </summary>
     [DefaultExecutionOrder(-10)] // Places the player and the camera before the other Start, which read their positions.
@@ -43,6 +43,9 @@ namespace LD60
 
         /// <summary>Set before Start, by the MainMenu, to keep the player hidden until Begin is called instead of spawning right away.</summary>
         public bool WaitForBegin { get; set; }
+
+        /// <summary>Raised when the camera starts moving back to the main menu after the end of the game.</summary>
+        public event Action ReturningToMenu;
 
         /// <summary>Raised once the camera is back at the main menu after the end of the game.</summary>
         public event Action ReturnedToMenu;
@@ -167,6 +170,7 @@ namespace LD60
                 yield break;
             }
             WaitForBegin = true;
+            ReturningToMenu?.Invoke();
             yield return scroller.ReturnTo(menuCameraX.Value, settings.MenuReturnDuration);
             ReturnedToMenu?.Invoke();
         }
