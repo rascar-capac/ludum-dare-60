@@ -52,7 +52,7 @@ Lorsqu’un délivrable est demandé :
 4. Produire un build Windows.
 5. Produire un build OpenGL.
 6. Envoyer les builds validés sur la page itch.io du projet :
-   `https://rascar-capac.itch.io/ludum-dare-60`
+   `https://rascar-capac.itch.io/rupestre`
 
 Avant une publication, vérifier que les tests et les builds ont réussi. Ne jamais exposer de secrets ou de jetons d’authentification dans le dépôt, les logs ou les réponses.
 
