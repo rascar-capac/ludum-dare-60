@@ -7,8 +7,7 @@ namespace LD60
     /// Main menu painted on the wall: the UI Toolkit panel renders into the target texture of its PanelSettings, which the
     /// WallTexture material of this quad (1 x 1 unit, scaled by the transform) draws in the paint layer.
     /// The pointer position is projected on the quad plane to reach the panel. Keyboard and gamepad move the focus.
-    /// The camera starts centered on the menu and the player waits for Begin (see PlayerDeath.WaitForBegin), while the
-    /// music plays the menu loop (see MusicPlayer.WaitForBegin).
+    /// The camera starts centered on the menu and the player waits for Begin (see PlayerDeath.WaitForBegin).
     /// Settings replaces the buttons with the volume sliders (see AudioPreferences); Back or the cancel input returns.
     /// Once Begin is pressed, the menu stays painted on the wall but can't be used anymore.
     /// </summary>
@@ -19,7 +18,6 @@ namespace LD60
 
         [SerializeField] PlayerDeath player;
         [SerializeField] CameraScroller scroller;
-        [SerializeField] MusicPlayer music;
 
         UIDocument document;
         VisualElement root;
@@ -38,10 +36,6 @@ namespace LD60
             if (player != null)
             {
                 player.WaitForBegin = true;
-            }
-            if (music != null)
-            {
-                music.WaitForBegin = true;
             }
         }
 
@@ -91,10 +85,6 @@ namespace LD60
             if (player != null)
             {
                 player.Begin();
-            }
-            if (music != null)
-            {
-                music.Begin();
             }
         }
 
