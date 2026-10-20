@@ -21,7 +21,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PROJECT_PATH: LudumDare60
+  PROJECT_PATH: Rupestre
   BUILD_NAME: Rupestre
   ITCH_GAME: rascar-capac/rupestre
   # Tag to archive: the pushed tag, or the one given to a manual run
