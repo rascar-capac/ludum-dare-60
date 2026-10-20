@@ -5170,7 +5170,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7289321483613193344, guid: a789e3e8daf66ae48b818cccdcd2b7ca, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 4.49
+      value: 2.44
       objectReference: {fileID: 0}
     - target: {fileID: 7289321483613193344, guid: a789e3e8daf66ae48b818cccdcd2b7ca, type: 3}
       propertyPath: m_LocalPosition.z
@@ -9995,7 +9995,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: LD60.Runtime::LD60.TorchFlicker
   settings: {fileID: 11400000, guid: a6126877472eb634ba748f3c40123ded, type: 2}
-  avatar: {fileID: 1169486024}
+  avatar: {fileID: 0}
 --- !u!114 &1901795267
 MonoBehaviour:
   m_ObjectHideFlags: 0
