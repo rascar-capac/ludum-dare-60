@@ -6,15 +6,21 @@ on:
     # Version tags (v1.0, v1.1…) are archived on itch in their own channel
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing tag to build and archive (leave empty for a regular build)
+        required: false
 
 concurrency:
-  group: build-${{ github.ref }}
+  group: build-${{ github.ref }}-${{ inputs.tag }}
   cancel-in-progress: true
 
 env:
   PROJECT_PATH: LudumDare60
   BUILD_NAME: Rupestre
   ITCH_GAME: rascar-capac/rupestre
+  # Tag to archive: the pushed tag, or the one given to a manual run
+  ARCHIVE_TAG: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || '' }}
 
 jobs:
   build:
@@ -44,6 +50,8 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
 
       - name: Cache Library
         uses: actions/cache@v4
@@ -73,7 +81,7 @@ jobs:
 
       - name: Install butler
         # Only the latest WebGL build is kept on itch, tags don't archive it
-        if: ${{ !(github.ref_type == 'tag' && matrix.channel == 'html5') }}
+        if: ${{ !(env.ARCHIVE_TAG != '' && matrix.channel == 'html5') }}
         run: |
           curl -fsSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
           unzip -q butler.zip -d "$HOME/butler"
@@ -81,13 +89,13 @@ jobs:
           echo "$HOME/butler" >> "$GITHUB_PATH"
 
       - name: Push to itch.io
-        if: ${{ !(github.ref_type == 'tag' && matrix.channel == 'html5') }}
+        if: ${{ !(env.ARCHIVE_TAG != '' && matrix.channel == 'html5') }}
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
-          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
-            CHANNEL="${{ matrix.channel }}-$GITHUB_REF_NAME"
-            USERVERSION="$GITHUB_REF_NAME"
+          if [[ -n "$ARCHIVE_TAG" ]]; then
+            CHANNEL="${{ matrix.channel }}-$ARCHIVE_TAG"
+            USERVERSION="$ARCHIVE_TAG"
           else
             CHANNEL="${{ matrix.channel }}"
             USERVERSION="${{ github.run_number }}-${GITHUB_SHA::7}"
