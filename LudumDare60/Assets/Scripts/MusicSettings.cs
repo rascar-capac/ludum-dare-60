@@ -3,7 +3,7 @@ using UnityEngine;
 namespace LD60
 {
     /// <summary>
-    /// Music tuning. The clip stays on the AudioSource of the MusicPlayer.
+    /// Music tuning. The clips stay on the AudioSources of the MusicPlayer.
     /// </summary>
     [CreateAssetMenu(fileName = "MusicSettings", menuName = "LD60/Music Settings")]
     public class MusicSettings : ScriptableObject
