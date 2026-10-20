@@ -11,8 +11,8 @@ concurrency:
 
 env:
   PROJECT_PATH: LudumDare60
-  BUILD_NAME: LudumDare60
-  ITCH_GAME: rascar-capac/ludum-dare-60
+  BUILD_NAME: Rupestre
+  ITCH_GAME: rascar-capac/rupestre
 
 jobs:
   build:
@@ -25,7 +25,7 @@ jobs:
           - targetPlatform: WebGL
             channel: html5
             # WebGL builds land in a subfolder named after the build
-            pushPath: build/WebGL/LudumDare60
+            pushPath: build/WebGL/Rupestre
           - targetPlatform: StandaloneWindows64
             channel: windows
             pushPath: build/StandaloneWindows64
