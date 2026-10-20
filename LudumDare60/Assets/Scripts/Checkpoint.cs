@@ -24,7 +24,7 @@ namespace LD60
         [SerializeField] bool startPoint;
         [Tooltip("Disabled in builds.")]
         [SerializeField] bool debug;
-        [Tooltip("Reaching it ends the game: the player can't move anymore and the camera stops.")]
+        [Tooltip("Reaching it ends the game: the player can't move anymore and the camera stops, then returns to the main menu.")]
         [SerializeField] bool endPoint;
 
         Animator animator;

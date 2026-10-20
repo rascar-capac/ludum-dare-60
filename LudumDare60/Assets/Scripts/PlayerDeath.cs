@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -13,6 +14,9 @@ namespace LD60
     /// Without any Checkpoint, the player spawns at their position in the scene.
     /// Controls are disabled for the whole sequence.
     /// Reaching an end point Checkpoint ends the game: controls are disabled, the camera stops and the player can't die anymore.
+    /// After RespawnSettings.EndDelay, the level is reset, the player is hidden and the camera moves back to the main menu,
+    /// where it was when Begin was called, then ReturnedToMenu is raised and the player waits for Begin again.
+    /// Without a main menu, the player respawns at the start Checkpoint instead.
     /// </summary>
     [DefaultExecutionOrder(-10)] // Places the player and the camera before the other Start, which read their positions.
     [RequireComponent(typeof(Rigidbody2D), typeof(Collider2D), typeof(SpriteRenderer))]
@@ -32,12 +36,16 @@ namespace LD60
         SpearThrower thrower;
         Vector3 spawnPosition;
         Checkpoint currentCheckpoint;
+        float? menuCameraX;
 
         public bool IsDead { get; private set; }
         public bool HasEnded { get; private set; }
 
         /// <summary>Set before Start, by the MainMenu, to keep the player hidden until Begin is called instead of spawning right away.</summary>
         public bool WaitForBegin { get; set; }
+
+        /// <summary>Raised once the camera is back at the main menu after the end of the game.</summary>
+        public event Action ReturnedToMenu;
 
         void Awake()
         {
@@ -85,6 +93,10 @@ namespace LD60
                 return;
             }
             WaitForBegin = false;
+            if (scroller != null)
+            {
+                menuCameraX = scroller.transform.position.x;
+            }
             StartCoroutine(SpawnSequence(settings.BeginCameraDuration));
         }
 
@@ -131,6 +143,32 @@ namespace LD60
             SetControlsEnabled(false);
             body.linearVelocity = new Vector2(0f, body.linearVelocity.y);
             scroller.Scrolling = false;
+            if (settings != null)
+            {
+                StartCoroutine(EndSequence());
+            }
+        }
+
+        IEnumerator EndSequence()
+        {
+            yield return new WaitForSeconds(settings.EndDelay);
+            Hide();
+            ResetLevel();
+            Checkpoint start = Checkpoint.GetStart();
+            if (start != null)
+            {
+                SetCheckpoint(start);
+            }
+            HasEnded = false;
+
+            if (menuCameraX == null)
+            {
+                yield return SpawnSequence(settings.CameraReturnDuration);
+                yield break;
+            }
+            WaitForBegin = true;
+            yield return scroller.ReturnTo(menuCameraX.Value, settings.MenuReturnDuration);
+            ReturnedToMenu?.Invoke();
         }
 
         IEnumerator DeathSequence()
@@ -169,13 +207,7 @@ namespace LD60
         IEnumerator SpawnSequence(float cameraDuration)
         {
             Hide();
-            EnemyController.ResetAll();
-            Pickup.ResetAll();
-            ThrownSpear.ClearAll();
-            if (weapon != null)
-            {
-                weapon.SpearCount = 0;
-            }
+            ResetLevel();
 
             if (scroller != null)
             {
@@ -220,6 +252,18 @@ namespace LD60
             body.linearVelocity = Vector2.zero;
             body.simulated = false;
             spriteRenderer.enabled = false;
+        }
+
+        /// <summary>Brings back every enemy and Pickup, removes every ThrownSpear and takes the spears of the player.</summary>
+        void ResetLevel()
+        {
+            EnemyController.ResetAll();
+            Pickup.ResetAll();
+            ThrownSpear.ClearAll();
+            if (weapon != null)
+            {
+                weapon.SpearCount = 0;
+            }
         }
 
         void SetCheckpoint(Checkpoint checkpoint)

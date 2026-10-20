@@ -10,7 +10,8 @@ namespace LD60
     /// The camera starts centered on the menu and the player waits for Begin (see PlayerDeath.WaitForBegin), while the
     /// music plays the menu loop (see MusicPlayer.WaitForBegin).
     /// Settings replaces the buttons with the volume sliders (see AudioPreferences); Back or the cancel input returns.
-    /// Once Begin is pressed, the menu stays painted on the wall but can't be used anymore.
+    /// Once Begin is pressed, the menu stays painted on the wall but can't be used anymore,
+    /// until the camera comes back to it at the end of the game (see PlayerDeath.ReturnedToMenu).
     /// </summary>
     [RequireComponent(typeof(UIDocument))]
     public class MainMenu : MonoBehaviour
@@ -73,6 +74,18 @@ namespace LD60
             quitButton.style.display = Application.platform == RuntimePlatform.WebGLPlayer ? DisplayStyle.None : DisplayStyle.Flex;
 
             document.panelSettings.SetScreenToPanelSpaceFunction(ScreenToPanel);
+            if (player != null)
+            {
+                player.ReturnedToMenu += Reopen;
+            }
+        }
+
+        void OnDisable()
+        {
+            if (player != null)
+            {
+                player.ReturnedToMenu -= Reopen;
+            }
         }
 
         void Start()
@@ -96,6 +109,12 @@ namespace LD60
             {
                 music.Begin();
             }
+        }
+
+        void Reopen()
+        {
+            root.SetEnabled(true);
+            ShowPage(mainPage, settingsPage, beginButton);
         }
 
         void CloseSettings()
