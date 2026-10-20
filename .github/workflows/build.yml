@@ -10,9 +10,14 @@ on:
       tag:
         description: Existing tag to build and archive (leave empty for a regular build)
         required: false
+      platform:
+        description: Platforms to build
+        type: choice
+        options: [both, WebGL, Windows]
+        default: both
 
 concurrency:
-  group: build-${{ github.ref }}-${{ inputs.tag }}
+  group: build-${{ github.ref }}-${{ inputs.tag }}-${{ inputs.platform }}
   cancel-in-progress: true
 
 env:
@@ -29,14 +34,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - targetPlatform: WebGL
-            channel: html5
-            # WebGL builds land in a subfolder named after the build
-            pushPath: build/WebGL/Rupestre
-          - targetPlatform: StandaloneWindows64
-            channel: windows
-            pushPath: build/StandaloneWindows64
+        # WebGL is only built on manual runs, Windows on every run unless excluded by the platform input.
+        # WebGL builds land in a subfolder named after the build.
+        include: >-
+          ${{ fromJSON(format('[{0}{1}{2}]',
+            github.event_name == 'workflow_dispatch' && inputs.platform != 'Windows'
+              && '{"targetPlatform":"WebGL","channel":"html5","pushPath":"build/WebGL/Rupestre"}'
+              || '',
+            inputs.platform == 'both' && ',' || '',
+            inputs.platform != 'WebGL'
+              && '{"targetPlatform":"StandaloneWindows64","channel":"windows","pushPath":"build/StandaloneWindows64"}'
+              || '')) }}
 
     steps:
       - name: Free disk space
@@ -80,8 +88,6 @@ jobs:
           retention-days: 7
 
       - name: Install butler
-        # Only the latest WebGL build is kept on itch, tags don't archive it
-        if: ${{ !(env.ARCHIVE_TAG != '' && matrix.channel == 'html5') }}
         run: |
           curl -fsSL -o butler.zip https://broth.itch.zone/butler/linux-amd64/LATEST/archive/default
           unzip -q butler.zip -d "$HOME/butler"
@@ -89,15 +95,17 @@ jobs:
           echo "$HOME/butler" >> "$GITHUB_PATH"
 
       - name: Push to itch.io
-        if: ${{ !(env.ARCHIVE_TAG != '' && matrix.channel == 'html5') }}
         env:
           BUTLER_API_KEY: ${{ secrets.BUTLER_API_KEY }}
         run: |
+          CHANNEL="${{ matrix.channel }}"
           if [[ -n "$ARCHIVE_TAG" ]]; then
-            CHANNEL="${{ matrix.channel }}-$ARCHIVE_TAG"
             USERVERSION="$ARCHIVE_TAG"
+            # Only the latest WebGL build is kept on itch, tags don't archive it
+            if [[ "$CHANNEL" != html5 ]]; then
+              CHANNEL="$CHANNEL-$ARCHIVE_TAG"
+            fi
           else
-            CHANNEL="${{ matrix.channel }}"
             USERVERSION="${{ github.run_number }}-${GITHUB_SHA::7}"
           fi
           butler push "${{ matrix.pushPath }}" "$ITCH_GAME:$CHANNEL" \
